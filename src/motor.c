@@ -60,7 +60,7 @@ estado_t main_loop(juego_t *juego, void *estructura, pantalla_t *pantalla)
 			pantalla_color_texto(pantalla, 127, 127, 127, 0.5f);
 			pantalla_color_fondo(pantalla, 0, 0, 0, 0.0f);
 			pantalla_estilo_texto(pantalla, false, false, false);
-			pantalla_texto(pantalla, 0, 0, "Frames: %d ms",
+			pantalla_texto(pantalla, 0, 0, "Frames: %d",
 				       frames_transcurridos);
 		}
 
