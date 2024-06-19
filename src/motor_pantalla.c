@@ -5,14 +5,6 @@
 #include <string.h>
 #include <stdarg.h>
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
-#ifdef __unix__
-#include <sys/ioctl.h>
-#endif
-
 // ANSI Escape Codes
 #define ESC "\x1b"
 #define CSI "["
@@ -35,12 +27,14 @@
 #define OFF "l"
 #define ON "h"
 
+// Se buscó el mejor valor con prueba y error.
 #define TAMANIO_BUFFER_STDOUT 4096
+
 #define LONGITUD_MAXIMA_TEXTO 127
 
 /**
  * "Meta-data" de cada caracter
- * (como se visualizará en pantalla).
+ * (estilo en pantalla).
 */
 typedef struct meta_caracter {
 	color_t fondo;
@@ -50,6 +44,13 @@ typedef struct meta_caracter {
 	bool italico : 1;
 } meta_caracter_t;
 
+/**
+ * Estilo con el que vamos a escribir
+ * el siguiente caracter.
+ * 
+ * Si hubiera opacidad menor a 1, se mezcla
+ * con el color anterior, ya existente.
+ */
 typedef struct paleta {
 	color_t fondo;
 	float opacidad_fondo;
@@ -61,20 +62,14 @@ typedef struct paleta {
 } paleta_t;
 
 struct pantalla {
-	// Offset en donde dibujar el viewport, donde se
-	// deja padding en la terminal para que el viewport
-	// esté centrado.
-	unsigned x_origen, y_origen;
-
 	// Tamaño del viewport donde se ve el juego
 	unsigned ancho, alto;
 
-	// Auxiliar, utilizado para stdout.
+	// Auxiliar, utilizado como búfer de stdout.
 	char *buffer_stdout;
 
 	// Donde se almacena todo lo que será printeado en el frame actual
 	char *buffer_caracteres;
-
 	// Donde se almacena los colores y estilo de cada caracter
 	meta_caracter_t *meta_caracteres;
 
@@ -105,7 +100,7 @@ void mezclar_paleta(paleta_t *paleta, meta_caracter_t *meta)
  * 
  * Devuelve el buffer externo a ser utilizado.
 */
-char *deshabilitar_flush_stdout(size_t tamanio_buffer)
+char *configurar_stdout(size_t tamanio_buffer)
 {
 	char *buffer = malloc(tamanio_buffer);
 	if (buffer == NULL)
@@ -140,43 +135,13 @@ void reestablecer_stdout()
 */
 void mover_cursor_a(pantalla_t *pantalla, int x, int y)
 {
-	printf(ESC CSI "%d;%dH", (int)pantalla->y_origen + y,
-	       (int)pantalla->x_origen + x);
-}
-
-/**
- * Devuelve las dimensiones de la terminal en caracteres
- * a través de los argumentos pasados.
-*/
-void dimensiones_terminal(unsigned *ancho, unsigned *alto)
-{
-#ifdef _WIN32
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
-	*ancho = (unsigned)(csbi.srWindow.Right - csbi.srWindow.Left + 1);
-	*alto = (unsigned)(csbi.srWindow.Bottom - csbi.srWindow.Top + 1);
-#endif
-
-#ifdef __unix__
-	struct winsize w;
-	ioctl(0, TIOCGWINSZ, &w);
-	*ancho = w.ws_col;
-	*alto = w.ws_row;
-#endif
+	printf(ESC CSI "%d;%dH", y, x);
 }
 
 pantalla_t *pantalla_crear(unsigned ancho, unsigned alto, estado_t *estado)
 {
-	unsigned ancho_terminal, alto_terminal;
-	dimensiones_terminal(&ancho_terminal, &alto_terminal);
-	if (ancho_terminal < ancho || alto_terminal < alto) {
-		if (estado != NULL)
-			*estado = TERMINAL_MUY_CHICA;
-		return NULL;
-	}
-
 	char *buffer_stdout =
-		deshabilitar_flush_stdout(TAMANIO_BUFFER_STDOUT * sizeof(char));
+		configurar_stdout(TAMANIO_BUFFER_STDOUT * sizeof(char));
 	if (buffer_stdout == NULL) {
 		if (estado != NULL)
 			*estado = ERROR_STDOUT;
@@ -191,8 +156,7 @@ pantalla_t *pantalla_crear(unsigned ancho, unsigned alto, estado_t *estado)
 		return NULL;
 	}
 
-	unsigned tamanio_buffer = ancho_terminal * alto_terminal;
-
+	unsigned tamanio_buffer = ancho * alto;
 	char *buffer = malloc(tamanio_buffer * sizeof(char));
 	if (buffer == NULL) {
 		free(pantalla);
@@ -215,8 +179,6 @@ pantalla_t *pantalla_crear(unsigned ancho, unsigned alto, estado_t *estado)
 
 	pantalla->ancho = ancho;
 	pantalla->alto = alto;
-	pantalla->x_origen = (ancho_terminal - ancho) / 2;
-	pantalla->y_origen = (alto_terminal - alto) / 2;
 	pantalla->buffer_caracteres = buffer;
 	pantalla->meta_caracteres = meta;
 	memset(&pantalla->paleta, 0, sizeof(paleta_t));
@@ -224,10 +186,7 @@ pantalla_t *pantalla_crear(unsigned ancho, unsigned alto, estado_t *estado)
 	pantalla->paleta.opacidad_texto = 1.0f;
 	pantalla->buffer_stdout = buffer_stdout;
 
-	// setvbuf(stdout, NULL, _IOFBF, TAMANIO_BUFFER_STDOUT);
 	printf(ESC CSI VISIBILIDAD_CURSOR OFF);
-	// for (int i = 0; i < alto_terminal; i++)
-	// 	printf("\n");
 	printf(ESC CSI BORRAR_TODO);
 	fflush(stdout);
 
@@ -314,8 +273,8 @@ void pantalla_texto(pantalla_t *pantalla, int x, int y, const char *formato,
 		pantalla_escribir(pantalla, x + i, y, texto[i]);
 }
 
-void pantalla_rect(pantalla_t *pantalla, int x, int y, unsigned ancho,
-		   unsigned alto, char borde)
+void pantalla_rectangulo(pantalla_t *pantalla, int x, int y, unsigned ancho,
+			 unsigned alto, char borde)
 {
 	if (pantalla == NULL)
 		return;
@@ -361,8 +320,7 @@ void pantalla_actualizar_frame(pantalla_t *pantalla)
 	bool primer_caracter = true;
 
 	for (unsigned y = 0; y < pantalla->alto; y++) {
-		printf(ESC CSI "%d;%dH", pantalla->y_origen + y,
-		       pantalla->x_origen);
+		printf(ESC CSI "%d;%dH", y, 0);
 
 		for (unsigned x = 0; x < pantalla->ancho; x++) {
 			unsigned pos_buffer = y * pantalla->ancho + x;

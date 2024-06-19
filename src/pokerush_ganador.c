@@ -170,10 +170,10 @@ void pr_ganador_graficos(void *escenario_void, pantalla_t *pantalla,
 	pantalla_color_fondo(pantalla, C_NORMAL, 1.0f);
 	int x = ease_in_out(contexto->frames_escena, 0, D_TRANSICION, 0,
 			    ANCHO_PANTALLA / 2);
-	pantalla_rect(pantalla, 0, 0, (unsigned)(ANCHO_PANTALLA / 2 - x),
-		      ALTO_PANTALLA, ' ');
-	pantalla_rect(pantalla, ANCHO_PANTALLA / 2 + 1 + x, 0, ANCHO_PANTALLA,
-		      ALTO_PANTALLA, ' ');
+	pantalla_rectangulo(pantalla, 0, 0, (unsigned)(ANCHO_PANTALLA / 2 - x),
+			    ALTO_PANTALLA, ' ');
+	pantalla_rectangulo(pantalla, ANCHO_PANTALLA / 2 + 1 + x, 0,
+			    ANCHO_PANTALLA, ALTO_PANTALLA, ' ');
 }
 
 void pr_ganador_destruir(void *escenario_void)

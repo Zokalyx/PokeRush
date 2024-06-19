@@ -170,8 +170,8 @@ void pr_versus_graficos(void *escenario_void, pantalla_t *pantalla,
 				    ANCHO_PANTALLA, -ANCHO_PANTALLA);
 	pantalla_color_fondo(pantalla, C_NORMAL, opacidad);
 	for (int i = 0; i < ALTO_PANTALLA; i++)
-		pantalla_rect(pantalla, pendiente * (i - Y_NOMBRE_END), i,
-			      ANCHO_PANTALLA, 1, ' ');
+		pantalla_rectangulo(pantalla, pendiente * (i - Y_NOMBRE_END), i,
+				    ANCHO_PANTALLA, 1, ' ');
 }
 
 void pr_versus_destruir(void *escenario_void)

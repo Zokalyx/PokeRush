@@ -6,6 +6,7 @@ Pikachu
 Psyduck
 Snorlax
 Squirtle
+pokemon_default
 Brock
 Cynthia
 jugador

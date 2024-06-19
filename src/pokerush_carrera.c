@@ -310,8 +310,8 @@ void dibujar_timers(jugador_t *jugador, pantalla_t *pantalla, uint64_t tiempo,
 	color_t color = color_mezcla(color_crear(B_SUMA_TIEMPO),
 				     color_crear(B_TIEMPO_NORMAL), progreso);
 	pantalla_color_fondo(pantalla, color.r, color.g, color.b, opacidad);
-	pantalla_rect(pantalla, pos_x - 2, Y_TIEMPO - 1,
-		      5 + (jugador->tiempo_total >= 10 ? 1 : 0), 3, ' ');
+	pantalla_rectangulo(pantalla, pos_x - 2, Y_TIEMPO - 1,
+			    5 + (jugador->tiempo_total >= 10 ? 1 : 0), 3, ' ');
 
 	pantalla_color_fondo(pantalla, C_TRANSPARENTE);
 	pantalla_texto(pantalla, pos_x, Y_TIEMPO, "%d", jugador->tiempo_total);
@@ -531,8 +531,9 @@ void pr_carrera_graficos(void *escenario_void, pantalla_t *pantalla,
 			D_TICK * TICKS_END, 0, ANCHO_PANTALLA / 2);
 
 		pantalla_color_fondo(pantalla, C_NORMAL, 1.0f);
-		pantalla_rect(pantalla, ANCHO_PANTALLA / 2 - x_externo, 0,
-			      2 * (unsigned)x_externo, ALTO_PANTALLA, ' ');
+		pantalla_rectangulo(pantalla, ANCHO_PANTALLA / 2 - x_externo, 0,
+				    2 * (unsigned)x_externo, ALTO_PANTALLA,
+				    ' ');
 	}
 }
 

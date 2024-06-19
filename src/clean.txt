@@ -8,15 +8,13 @@
 - motor_color
 - motor_input (justificar en informe)
 - motor_sprite
+- motor_pantalla
 - pokerush
 - motor
 
 # Requires cleaning or modification
 
 - motor_estado
-- motor_pantalla
-- motor_directorio (reemplazar funcionalidad)
-- pokerush
 - pokerush_carrera
 - pokerush_entrenador
 - pokerush_macros
@@ -26,9 +24,5 @@
 - pokerush_reglas
 - pokerush_splash_screen
 - pokerush_versus
-
-# Won't clean (unnecessary)
-
-- motor_directorio
 
 

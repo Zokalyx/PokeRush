@@ -57,8 +57,8 @@ void pantalla_fondo(pantalla_t *pantalla);
  * ancho y alto dado. Debe pasarse un caracter que actúa como recuadro, el cual
  * puede ser un espacio si no se desea un recuadro visible.
 */
-void pantalla_rect(pantalla_t *pantalla, int x, int y, unsigned ancho,
-		   unsigned alto, char borde);
+void pantalla_rectangulo(pantalla_t *pantalla, int x, int y, unsigned ancho,
+			 unsigned alto, char borde);
 
 /**
  * Dibuja arte ASCII especificado por parámetro.
@@ -81,6 +81,7 @@ void pantalla_actualizar_frame(pantalla_t *pantalla);
 
 /**
  * Libera toda la memoria reservada por la pantalla.
+ * Reestablece el comportamiento original de la terminal.
 */
 void pantalla_destruir(pantalla_t *pantalla);
 

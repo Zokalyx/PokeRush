@@ -14,7 +14,6 @@
 #include "pokerush_ganador.h"
 
 #include "motor_estado.h"
-#include "motor_directorio.h"
 
 #include <stdlib.h>
 #include <stdbool.h>
