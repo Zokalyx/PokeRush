@@ -25,12 +25,16 @@
 
 typedef struct seleccion {
 	size_t pokemon_idx;
-	// Por simplicidad el arreglo tiene siempre OBSTACULOS_IMPOSIBLE
-	// y usamos los primeros N elementos que necesitemos.
 	size_t cantidad_obstaculos;
+	// Por simplicidad el arreglo tiene siempre OBSTACULOS_IMPOSIBLE
+	// y usamos los primeros #`cantidad_obstaculos`.
 	enum TP_OBSTACULO obstaculos[OBSTACULOS_IMPOSIBLE];
+	// El oponente (CPU) oculta algunos de sus obstáculos.
+	// El jugador siempre tiene todos sus obstáculos visibles.
+	bool obstaculos_ocultos[OBSTACULOS_IMPOSIBLE];
+	// El oponente (CPU) siempre tiene todos sus obstáculos activados.
+	// El jugador puede elegir desactivar o activar cada uno.
 	bool obstaculos_activados[OBSTACULOS_IMPOSIBLE];
-	bool ocultos[OBSTACULOS_IMPOSIBLE];
 } seleccion_t;
 
 typedef struct atributo {
@@ -42,15 +46,16 @@ typedef struct escenario {
 	const char *nombre2;
 	int x_nombre1, x_nombre2;
 	seleccion_t seleccion1, seleccion2;
-	// -1: Pokemon.
-	// >0: Obstáculo.
+	// -1: Modificando pokemon.
+	// >0: Modificando obstáculo.
 	int modificando;
 	atributo_t atributos[NUM_ATRIBUTOS];
 } escenario_t;
 
 /**
  * Elige un pokemon al azar y una pista de obstaculos
- * al azar.
+ * al azar. Esta función no se responsabiliza de que
+ * el pokemon no coincida con el del oponente!
 */
 seleccion_t seleccion_azar(size_t cantidad_pokemones,
 			   size_t cantidad_obstaculos, bool ocultar)
@@ -70,7 +75,7 @@ seleccion_t seleccion_azar(size_t cantidad_pokemones,
 			break;
 		}
 
-		seleccion.ocultos[i] = ocultar ? i % 2 != 0 : false;
+		seleccion.obstaculos_ocultos[i] = ocultar ? i % 2 != 0 : false;
 		seleccion.obstaculos_activados[i] = i < cantidad_obstaculos;
 	}
 	seleccion.cantidad_obstaculos = cantidad_obstaculos;
@@ -86,17 +91,21 @@ seleccion_t seleccion_reintento(TP *tp, const struct pokemon_info **pokemones,
 				enum TP_JUGADOR jugador, bool ocultar)
 {
 	seleccion_t seleccion;
+
 	const struct pokemon_info *pokemon =
 		tp_pokemon_seleccionado(tp, jugador);
+
+	// Tenemos un puntero, pero queremos un índice propio.
 	for (size_t i = 0; i < cantidad_pokemones; i++) {
 		if (pokemon == pokemones[i])
 			seleccion.pokemon_idx = i;
 	}
+
+	// Procesar obstáculos
 	char *obstaculos = tp_obstaculos_pista(tp, jugador);
 	if (obstaculos == NULL)
-		// No crashear, solo utilizar una nueva configuracion.
+		// No crashear, solo utilizar una nueva configuración.
 		return seleccion_azar(cantidad_pokemones, 3, false);
-
 	size_t cantidad_obstaculos = 0;
 	for (size_t i = 0; obstaculos[i] != 0; i++) {
 		switch (obstaculos[i]) {
@@ -111,17 +120,15 @@ seleccion_t seleccion_reintento(TP *tp, const struct pokemon_info **pokemones,
 			break;
 		}
 		seleccion.obstaculos_activados[i] = true;
-		seleccion.ocultos[i] = ocultar ? i % 2 != 0 : false;
+		seleccion.obstaculos_ocultos[i] = ocultar ? i % 2 != 0 : false;
 		cantidad_obstaculos++;
 	}
+	free(obstaculos);
 
 	for (size_t i = cantidad_obstaculos; i < OBSTACULOS_IMPOSIBLE; i++) {
 		seleccion.obstaculos_activados[i] = false;
-		seleccion.ocultos[i] = ocultar ? i % 2 != 0 : false;
+		seleccion.obstaculos_ocultos[i] = ocultar ? i % 2 != 0 : false;
 	}
-
-	free(obstaculos);
-
 	seleccion.cantidad_obstaculos = cantidad_obstaculos;
 
 	return seleccion;
@@ -130,7 +137,7 @@ seleccion_t seleccion_reintento(TP *tp, const struct pokemon_info **pokemones,
 /**
  * Determina si se puede proceder a la carrera.
  * 
- * - La cantidad de obstáculos debe ser mayor a 0.
+ * - La cantidad de obstáculos (activados) debe ser mayor a 0.
 */
 bool seleccion_valida(seleccion_t *seleccion)
 {
@@ -178,29 +185,35 @@ void *pr_preparacion_iniciar(struct pr_contexto *contexto)
 
 	escenario->atributos[0].color = color_crear(C_FUERZA);
 	escenario->atributos[0].letra = IDENTIFICADOR_OBSTACULO_FUERZA;
+
 	escenario->atributos[1].color = color_crear(C_DESTREZA);
 	escenario->atributos[1].letra = IDENTIFICADOR_OBSTACULO_DESTREZA;
+
 	escenario->atributos[2].color = color_crear(C_INTELIGENCIA);
 	escenario->atributos[2].letra = IDENTIFICADOR_OBSTACULO_INTELIGENCIA;
 
-	if (contexto->es_reintento)
+	if (contexto->es_reintento) {
 		// Reutilizar la misma configuración
 		escenario->seleccion2 = seleccion_reintento(
 			contexto->tp, contexto->pokemones,
 			contexto->cantidad_pokemones, JUGADOR_2, true);
-	else
-		escenario->seleccion2 = seleccion_azar(
-			contexto->cantidad_pokemones, obstaculos_cpu, true);
-
-	if (contexto->es_reintento)
 		escenario->seleccion1 = seleccion_reintento(
 			contexto->tp, contexto->pokemones,
 			contexto->cantidad_pokemones, JUGADOR_1, false);
-	else
+
+		// Ya no podemos cambiar Pokémon.
+		escenario->modificando = 0;
+
+	} else {
+		// Nueva config.
+		escenario->seleccion2 = seleccion_azar(
+			contexto->cantidad_pokemones, obstaculos_cpu, true);
 		escenario->seleccion1 = seleccion_azar(
 			contexto->cantidad_pokemones, obstaculos_cpu, false);
 
-	escenario->modificando = contexto->es_reintento ? 0 : -1;
+		// Se permite modificar Pokémon.
+		escenario->modificando = -1;
+	}
 
 	// Evitar que sean el mismo pokemon
 	if (escenario->seleccion1.pokemon_idx ==
@@ -209,7 +222,8 @@ void *pr_preparacion_iniciar(struct pr_contexto *contexto)
 			(escenario->seleccion1.pokemon_idx + 1) %
 			contexto->cantidad_pokemones;
 
-	// Limpiar pista vieja si existe
+	// Limpiar pista vieja EN EL TP si existe
+	// (La selección en pantalla permanece)
 	tp_limpiar_pista(contexto->tp, JUGADOR_1);
 	tp_limpiar_pista(contexto->tp, JUGADOR_2);
 
@@ -218,19 +232,22 @@ void *pr_preparacion_iniciar(struct pr_contexto *contexto)
 
 /**
  * Guarda la información del escenario en el TP.
- * 
- * TODO: Verificar si falla agregar obstáculos.
 */
 void guardar_seleccion_en_tp(TP *tp, const struct pokemon_info **pokemones,
 			     seleccion_t seleccion1, seleccion_t seleccion2)
 {
 	// Pokemones.
+	// No puede fallar, ya que usamos el nombre de un pokemon que nos
+	// dio el TP mismo. Ya se verificó que los pokemon no sean idénticos.
 	tp_seleccionar_pokemon(tp, JUGADOR_1,
 			       pokemones[seleccion1.pokemon_idx]->nombre);
 	tp_seleccionar_pokemon(tp, JUGADOR_2,
 			       pokemones[seleccion2.pokemon_idx]->nombre);
 
 	// Obstáculos
+	// Puede fallar, pero lo dejamos pasar. Si no hay memoria
+	// probablemente no se pueda crear la siguiente escena
+	// y ya de esa manera crasheamos.
 	for (unsigned i = 0; i < OBSTACULOS_IMPOSIBLE; i++)
 		if (seleccion1.obstaculos_activados[i])
 			tp_agregar_obstaculo(tp, JUGADOR_1,
@@ -443,7 +460,7 @@ void pr_preparacion_graficos(void *escenario_void, pantalla_t *pantalla,
 		contexto->pokemones[escenario->seleccion2.pokemon_idx]->nombre);
 
 	for (int i = 0; i < escenario->seleccion2.cantidad_obstaculos; i++) {
-		if (escenario->seleccion2.ocultos[i]) {
+		if (escenario->seleccion2.obstaculos_ocultos[i]) {
 			pantalla_color_texto(pantalla, C_NORMAL, 1.0f);
 			pantalla_texto(pantalla, escenario->x_nombre2 + 2,
 				       Y_SELECCION + 2 + 2 * i, "?");
