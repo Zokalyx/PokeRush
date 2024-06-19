@@ -64,7 +64,6 @@ hash_t *crear_sprites(const char *directorio, estado_t *estado)
 		char nombre_sprite[LONGITUD_NOMBRE_ARCHIVO + 1];
 		snprintf(nombre_sprite, LONGITUD_NOMBRE_ARCHIVO + 1,
 			 "%s/%s" EXTENSION, directorio, nombre_solo);
-		printf("%s\n", nombre_sprite);
 		FILE *archivo_sprite = fopen(nombre_sprite, "rb");
 		if (archivo_sprite == NULL) {
 			hash_destruir_todo(sprites, destructor_sprite);

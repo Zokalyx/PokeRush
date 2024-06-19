@@ -20,9 +20,9 @@ int ease_in_out(uint64_t tiempo, uint64_t tiempo_comienzo, uint64_t tiempo_fin,
 		int inicio, int fin)
 {
 	if (tiempo < tiempo_comienzo)
-		return (float)inicio;
+		return inicio;
 	else if (tiempo > tiempo_fin)
-		return (float)fin;
+		return fin;
 
 	float a = (float)inicio;
 	float b = (float)fin;
