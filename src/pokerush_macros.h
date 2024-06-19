@@ -14,8 +14,8 @@
  * T = Tecla (int)
  * E = Estilo (negrita, subrayado, itálico)
  * S = Símbolo (char)
- * D = Duración (ms)
- * R = Retraso/Delay (ms)
+ * D = Duración (frames)
+ * R = Retraso/Delay (frames)
 */
 
 // Configuración de motor

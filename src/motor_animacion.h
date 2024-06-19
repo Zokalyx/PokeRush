@@ -8,18 +8,18 @@
  * 
  * Resultado de punto flotante.
 */
-float linear(uint64_t tiempo_ms, uint64_t comienzo_ms, uint64_t fin_ms,
+float linear(uint64_t tiempo, uint64_t tiempo_comienzo, uint64_t tiempo_fin,
 	     int inicio, int fin);
 
 /**
  * Movimiento no lineal con comienzo y final suaves.
 */
-int ease_in_out(uint64_t tiempo_ms, uint64_t comienzo_ms, uint64_t fin_ms,
+int ease_in_out(uint64_t tiempo, uint64_t tiempo_comienzo, uint64_t tiempo_fin,
 		int inicio, int fin);
 
 /**
  * Onda "cuadrada", que oscila entre el valor máximo y mínimo.
 */
-int parpadeo(uint64_t tiempo_ms, uint64_t periodo_ms, int inicio, int fin);
+int parpadeo(uint64_t tiempo, uint64_t periodo, int inicio, int fin);
 
 #endif // __ANIMACION_H__
