@@ -3,34 +3,25 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+// Color de máscara
 #define GREEN_SCREEN_R 0
 #define GREEN_SCREEN_G 255
 #define GREEN_SCREEN_B 0
+
+// Cuántas columnas ocupa un pixel. Esto no es 1
+// ya que en la terminal un caracter es mucho más alto
+// que ancho.
 #define PROPORCION_X_Y 2
 
-#ifdef _MSC_VER
-#pragma pack(push, 1)
-#endif
-
+// Struct empaquetado para que sea muy fácil
+// leer desde un archivo.
 typedef struct bmp_header {
 	uint16_t firma;
 	uint32_t tamanio_bytes;
 	uint16_t reservado1;
 	uint16_t reservado2;
 	uint32_t offset_pixeles;
-}
-#ifdef __GNUC__
-__attribute__((packed))
-#endif
-bmp_header_t;
-
-#ifdef _MSC_VER
-#pragma pack(pop)
-#endif
-
-#ifdef _MSC_VER
-#pragma pack(push, 1)
-#endif
+} __attribute__((packed)) bmp_header_t;
 
 typedef struct dib_header {
 	uint32_t tamanio_header;
@@ -44,36 +35,16 @@ typedef struct dib_header {
 	int32_t resolucion_vertical;
 	uint32_t colors_paleta;
 	uint32_t colores_importantes;
-}
-#ifdef __GNUC__
-__attribute__((packed))
-#endif
-dib_header_t;
-
-#ifdef _MSC_VER
-#pragma pack(pop)
-#endif
-
-#ifdef _MSC_VER
-#pragma pack(push, 1)
-#endif
+} __attribute__((packed)) dib_header_t;
 
 /**
- * Representa un pixel del bmp.
+ * Representa un pixel del BMP.
 */
 typedef struct bmp_pixel {
 	uint8_t b;
 	uint8_t g;
 	uint8_t r;
-}
-#ifdef __GNUC__
-__attribute__((packed))
-#endif
-bmp_pixel_t;
-
-#ifdef _MSC_VER
-#pragma pack(push, 1)
-#endif
+} __attribute__((packed)) bmp_pixel_t;
 
 /**
  * Retorna true si el encabezado cumple con lo pedido para el sprite:
@@ -164,10 +135,6 @@ sprite_t *sprite_crear(FILE *archivo, estado_t *estado)
 		return NULL;
 	}
 
-	printf("  Encabezado válido.\n");
-	printf("  Dimensiones: %i x %i\n", encabezado_dib.ancho,
-	       encabezado_dib.alto);
-
 	unsigned ancho = (unsigned)encabezado_dib.ancho;
 	unsigned alto = encabezado_dib.alto < 0 ?
 				(unsigned)(-encabezado_dib.alto) :
@@ -179,8 +146,6 @@ sprite_t *sprite_crear(FILE *archivo, estado_t *estado)
 		*estado = ERROR_MEMORIA;
 		return NULL;
 	}
-
-	printf("  Pixeles creados.\n");
 
 	fseek(archivo, (long)encabezado_bmp.offset_pixeles, SEEK_SET);
 	// https://en.wikipedia.org/wiki/BMP_file_format#Pixel_storage
@@ -202,8 +167,6 @@ sprite_t *sprite_crear(FILE *archivo, estado_t *estado)
 		}
 		fseek(archivo, (long)bytes_padding, SEEK_CUR);
 	}
-
-	printf("  Lectura exitosa.\n");
 
 	sprite_t *sprite = procesar_pixeles(ancho, alto, pixeles);
 	if (sprite == NULL)
