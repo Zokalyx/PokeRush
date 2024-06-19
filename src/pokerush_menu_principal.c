@@ -32,7 +32,7 @@
 #define ARCHIVO_LOGO_BACK "logo_back"
 #define P_LOGO 7, 4
 
-#define D_TRANSICION_COLOR_FONDO 1000
+#define D_TRANSICION_COLOR_FONDO 1000 / 30
 
 typedef struct opcion {
 	const char *mensaje;
@@ -43,6 +43,7 @@ typedef struct escenario {
 	void *logo;
 	void *logo_back;
 	opcion_t opciones[CANTIDAD_OPCIONES];
+	// Si la selección es -1, no hay selección.
 	int seleccion;
 } escenario_t;
 

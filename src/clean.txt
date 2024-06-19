@@ -15,6 +15,7 @@
 - pokerush_splash_screen
 - pokerush_entrenador
 - pokerush_macros
+- pokerush_menu_principal
 
 # Requires cleaning or modification
 
@@ -25,7 +26,6 @@
 - pokerush_reglas
 - pokerush_versus
 - pokerush_menu_juego
-- pokerush_menu_principal
 - pokerush_preparacion
 
 
