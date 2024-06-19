@@ -182,3 +182,7 @@ struct pokerush {
 ```
 
 Parece simple, pero toda la complejidad está dentro de `contexto` y también en `escenario` (posiblemente, dependiendo de la escena).
+
+---
+
+## Motor de juego
