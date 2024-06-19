@@ -43,6 +43,12 @@ void estado_mostrar(estado_t estado)
 	case ERROR_CREACION_TP:
 		printf("Error al crear el TP. Asegurate de que el archivo de pokemones.csv sea el correcto.");
 		break;
+	case ERROR_LECTURA_LISTA_BMP:
+		printf("Error al leer la lista de sprites.");
+		break;
+	case ERROR_LECTURA_SPRITE:
+		printf("Error al leer un sprite.");
+		break;
 	case ERROR_ABRIR_BITMAP:
 		printf("Error al abrir una imagen Bitmap.");
 		break;

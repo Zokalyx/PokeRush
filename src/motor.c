@@ -97,12 +97,12 @@ estado_t motor_ejecutar_juego(juego_t *juego, void *config_juego)
 	}
 
 	signal(SIGINT, handler_interrupcion);
-
 	deshabilitar_echo_terminal();
+
 	estado_t finalizacion = main_loop(juego, juego_struct, pantalla);
 	juego->finalizar(juego_struct);
-	habilitar_echo_terminal();
 
+	habilitar_echo_terminal();
 	signal(SIGINT, SIG_DFL);
 
 	pantalla_destruir(pantalla);

@@ -24,62 +24,79 @@
 #include "split.h"
 
 #define LONGITUD_NOMBRE_ARCHIVO 1023
+#define LONGITUD_NOMBRE_SPRITE 511
+#define FORMATO_NOMBRE_SPRITE " %511s "
+#define EXTENSION ".bmp"
+#define NOMBRE_LISTA_SPRITES "lista.txt"
 
-void aniadir_sprite_a_hash(FILE *archivo, const char *nombre_archivo,
-			   void *hash_void)
+void destructor_sprite(void *sprite)
 {
-	hash_t *hash = hash_void;
-
-	printf("Añadiendo: %s\n", nombre_archivo);
-
-	char nombre_sin_extension[LONGITUD_NOMBRE_ARCHIVO + 1];
-	bool string_entra = false;
-	for (int i = 0; i < LONGITUD_NOMBRE_ARCHIVO + 1; i++) {
-		if (nombre_archivo[i] == '.') {
-			nombre_sin_extension[i] = '\0';
-			string_entra = true;
-			break;
-		} else if (nombre_archivo[i] == '\0') {
-			string_entra = true;
-			nombre_sin_extension[i] = nombre_archivo[i];
-			break;
-		}
-
-		nombre_sin_extension[i] = nombre_archivo[i];
-	}
-	if (!string_entra)
-		return;
-
-	estado_t estado;
-	sprite_t *sprite = sprite_crear(archivo, &estado);
-
-	printf("  Sprite creado?: %p\n", (void *)sprite);
-
-	if (sprite != NULL)
-		hash_insertar(hash, nombre_sin_extension, sprite, NULL);
+	sprite_destruir(sprite);
 }
 
 /**
  * Crea un hashmap de sprites a partir de un directorio.
+ * Debe existir una archivo de texto con el nombre "lista.txt"
+ * en donde se encuentran todos los BMP a ser cargados.
  * 
  * Si falla devuelve NULL, escribiendo en `estado` la razón.
 */
 hash_t *crear_sprites(const char *directorio, estado_t *estado)
 {
-	hash_t *hash = hash_crear(0);
-	if (hash == NULL) {
+	hash_t *sprites = hash_crear(0);
+	if (sprites == NULL) {
 		*estado = ERROR_MEMORIA;
 		return NULL;
 	}
 
-	int estado_directorio = iterar_directorio(
-		directorio, aniadir_sprite_a_hash, hash, "rb");
-	if (estado_directorio == -1) {
-		*estado = ERROR_RECORRIDO_DIRECTORIO;
+	char nombre_lista[LONGITUD_NOMBRE_ARCHIVO + 1];
+	snprintf(nombre_lista, LONGITUD_NOMBRE_ARCHIVO + 1, "%s/%s", directorio,
+		 NOMBRE_LISTA_SPRITES);
+
+	FILE *lista = fopen(nombre_lista, "r");
+	if (lista == NULL) {
+		hash_destruir(sprites);
+		*estado = ERROR_LECTURA_LISTA_BMP;
 		return NULL;
 	}
 
-	return hash;
+	char nombre_solo[LONGITUD_NOMBRE_SPRITE + 1];
+	while (fscanf(lista, FORMATO_NOMBRE_SPRITE, nombre_solo) == 1) {
+		char nombre_sprite[LONGITUD_NOMBRE_ARCHIVO + 1];
+		snprintf(nombre_sprite, LONGITUD_NOMBRE_ARCHIVO + 1,
+			 "%s/%s" EXTENSION, directorio, nombre_solo);
+		printf("%s\n", nombre_sprite);
+		FILE *archivo_sprite = fopen(nombre_sprite, "rb");
+		if (archivo_sprite == NULL) {
+			hash_destruir_todo(sprites, destructor_sprite);
+			fclose(lista);
+			*estado = ERROR_LECTURA_SPRITE;
+			return NULL;
+		}
+
+		sprite_t *sprite = sprite_crear(archivo_sprite, estado);
+		fclose(archivo_sprite);
+		if (sprite == NULL) {
+			hash_destruir_todo(sprites, destructor_sprite);
+			fclose(lista);
+			return NULL;
+		}
+
+		sprite_t *sprite_anterior = NULL;
+		void *exito = hash_insertar(sprites, nombre_solo, sprite,
+					    (void **)&sprite_anterior);
+		sprite_destruir(sprite_anterior);
+
+		if (exito == NULL) {
+			fclose(lista);
+			*estado = ERROR_MEMORIA;
+			hash_destruir_todo(sprites, destructor_sprite);
+		}
+	}
+
+	fclose(lista);
+
+	return sprites;
 }
 
 /**
@@ -195,7 +212,6 @@ void *pokerush_iniciar(void *configuracion_void, estado_t *estado)
 		free(pokemones);
 		return NULL;
 	}
-
 	estructura->escena_actual = POKERUSH_SPLASH_SCREEN;
 
 	return estructura;
@@ -247,11 +263,6 @@ void pokerush_dibujar_graficos(void *estructura_void, pantalla_t *pantalla)
 
 	escena.dibujar_graficos(estructura->escenario, pantalla,
 				&estructura->contexto);
-}
-
-void destructor_sprite(void *sprite)
-{
-	sprite_destruir(sprite);
 }
 
 void pokerush_finalizar(void *estructura_void)
