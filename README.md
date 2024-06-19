@@ -1,3 +1,7 @@
+<div align="right">
+<img width="32px" src="img/algo2.svg">
+</div>
+
 # TP Juego: PokéRush
 
 ## Repositorio de Francisco Russo - 107480 - [frrusso@fi.uba.ar](mailto:frrusso@fi.uba.ar)
