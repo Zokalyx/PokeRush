@@ -13,12 +13,12 @@
 - motor
 - motor_estado
 - pokerush_splash_screen
+- pokerush_entrenador
+- pokerush_macros
 
 # Requires cleaning or modification
 
-- pokerush_macros
 - pokerush_carrera
-- pokerush_entrenador
 - pokerush_ganador
 - pokerush_informacion
 - pokerush_pokedex

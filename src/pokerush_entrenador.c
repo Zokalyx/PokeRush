@@ -9,12 +9,13 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#define D_CURSOR_TEXTO 500
+#define D_CURSOR_TEXTO 500 / 30
 #define M_TITULO "ENTRENADOR/A"
 #define M_INSTRUCCION "Escribi tu nombre:"
 #define Y_INSTRUCCION 10
 #define Y_SEPARACION 2
 #define P_SPRITE 50, 5
+#define M_CURSOR "_"
 
 typedef struct escenario {
 	size_t letra_actual;
@@ -42,8 +43,10 @@ enum pr_nombre_escena pr_entrenador_eventos(void *escenario_void, int input,
 	if (isalnum(input) && escenario->letra_actual < LONGITUD_NOMBRE - 1)
 		contexto->nombre_entrenador[escenario->letra_actual++] =
 			(char)input;
+
 	else if (input == BACKSPACE && escenario->letra_actual > 0)
 		contexto->nombre_entrenador[--escenario->letra_actual] = '\0';
+
 	else if (input == LINEFEED && escenario->letra_actual > 0)
 		return POKERUSH_MENU_PRINCIPAL;
 
@@ -87,7 +90,7 @@ void pr_entrenador_graficos(void *escenario_void, pantalla_t *pantalla,
 	if (parpadeo(contexto->frames_escena, D_CURSOR_TEXTO, false, true))
 		pantalla_texto(pantalla,
 			       X_MARGEN + (int)escenario->letra_actual,
-			       Y_INSTRUCCION + Y_SEPARACION, "%c", '_');
+			       Y_INSTRUCCION + Y_SEPARACION, M_CURSOR);
 
 	// Sprite
 	pantalla_sprite(pantalla, P_SPRITE, escenario->sprite, 1.0f);
