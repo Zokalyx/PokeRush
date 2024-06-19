@@ -44,6 +44,7 @@ enum pr_nombre_escena pr_splash_screen_eventos(void *escenario, int input,
 					       estado_t *estado)
 {
 	if (input != 0) {
+		srand((unsigned)contexto->frames_escena);
 		return POKERUSH_ENTRENADOR;
 	}
 

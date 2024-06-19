@@ -10,6 +10,8 @@
 
 #define T_DEBUG '\t'
 
+// Se hace esto para que Ctrl-C cierre el juego
+// de manera correcta, liberando toda memoria.
 volatile bool interrupcion = false;
 void handler_interrupcion(int numero_signal)
 {
@@ -31,8 +33,7 @@ bool juego_valido(juego_t *juego)
  * 
  * Devuelve el estado de finalización.
 */
-estado_t main_loop(juego_t *juego, void *estructura, pantalla_t *pantalla,
-		   unsigned frames_por_segundo)
+estado_t main_loop(juego_t *juego, void *estructura, pantalla_t *pantalla)
 {
 	uint64_t frames_transcurridos = 0;
 
@@ -79,8 +80,6 @@ estado_t motor_ejecutar_juego(juego_t *juego, void *config_juego)
 		return JUEGO_INVALIDO;
 
 	motor_config_t config_motor = juego->config_motor();
-	if (config_motor.frames_por_segundo == 0)
-		return CONFIGURACION_INVALIDA;
 
 	estado_t estado_juego;
 	void *juego_struct = juego->iniciar(config_juego, &estado_juego);
@@ -99,10 +98,8 @@ estado_t motor_ejecutar_juego(juego_t *juego, void *config_juego)
 
 	signal(SIGINT, handler_interrupcion);
 
-	srand(0);
 	deshabilitar_echo_terminal();
-	estado_t finalizacion = main_loop(juego, juego_struct, pantalla,
-					  config_motor.frames_por_segundo);
+	estado_t finalizacion = main_loop(juego, juego_struct, pantalla);
 	juego->finalizar(juego_struct);
 	habilitar_echo_terminal();
 

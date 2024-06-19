@@ -15,7 +15,6 @@
 typedef struct motor_config {
 	unsigned ancho_pantalla;
 	unsigned alto_pantalla;
-	unsigned frames_por_segundo;
 } motor_config_t;
 
 /**

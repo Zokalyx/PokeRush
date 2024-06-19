@@ -272,8 +272,7 @@ void pokerush_finalizar(void *estructura_void)
 motor_config_t pokerush_config_motor()
 {
 	return (motor_config_t){ .alto_pantalla = ALTO_PANTALLA,
-				 .ancho_pantalla = ANCHO_PANTALLA,
-				 .frames_por_segundo = FRAMES_POR_SEGUNDO };
+				 .ancho_pantalla = ANCHO_PANTALLA };
 }
 
 juego_t pr_juego()

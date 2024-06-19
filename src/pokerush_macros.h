@@ -20,9 +20,6 @@
 
 // Configuración de motor
 
-// 60: Fluido y normal
-// 30: Fondo persistente y más retro
-#define FRAMES_POR_SEGUNDO 60
 #define ANCHO_PANTALLA 90
 #define ALTO_PANTALLA 30
 
