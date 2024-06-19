@@ -1,3 +1,7 @@
+# TODO
+
+- Función común para la opacidad inicial en cada escena.
+
 # Clean
 
 - hash (copiado)
@@ -16,14 +20,14 @@
 - pokerush_entrenador
 - pokerush_macros
 - pokerush_menu_principal
+- pokerush_informacion
+- pokerush_reglas
 
 # Requires cleaning or modification
 
 - pokerush_carrera
 - pokerush_ganador
-- pokerush_informacion
 - pokerush_pokedex
-- pokerush_reglas
 - pokerush_versus
 - pokerush_menu_juego
 - pokerush_preparacion

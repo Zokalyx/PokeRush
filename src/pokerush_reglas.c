@@ -19,7 +19,7 @@
 #define M_LINEA_3 "una pista de obstaculos para su pokemon, al igual que vos."
 #define M_LINEA_4 "No te confundas! Esto no es una carrera, sino un desafio"
 #define M_LINEA_5 \
-	"amigable entre pokemones: deben llegar a la meta al mismo tiempo."
+	"amigable entre pokemon: deben llegar a la meta al mismo tiempo."
 
 #define M_LINEA_6 \
 	"Cada obstaculo tiene un atributo (fuerza, inteligencia o destreza)"
@@ -27,7 +27,7 @@
 #define M_LINEA_8 "Las rachas de obstaculos similares haran a tu pokemon"
 #define M_LINEA_9 "mas efectivo contra los mismos!"
 
-#define M_LINEA_10 "Revisa el pokedex para conocer mas sobre los pokemones."
+#define M_LINEA_10 "Revisa el pokedex para conocer mas sobre los pokemon."
 
 void *pr_reglas_iniciar(struct pr_contexto *contexto)
 {
