@@ -4,34 +4,6 @@
 - Eliminar valores y números mágicos en escenas.
 - Crear subfunciones para funciones largas en escenas.
 
-# Clean
-
-- hash (copiado)
-- lista (copiado)
-- split
-- tp
-- motor_animacion
-- motor_color
-- motor_input (justificar en informe)
-- motor_sprite
-- motor_pantalla
-- pokerush
-- motor
-- motor_estado
-- pokerush_splash_screen
-- pokerush_entrenador
-- pokerush_macros
-- pokerush_menu_principal
-- pokerush_informacion
-- pokerush_reglas
-- pokerush_menu_juego
-- pokerush_pokedex
-- pokerush_preparacion
-- pokerush_versus
-
-# Requires cleaning or modification
-
-- pokerush_carrera
-- pokerush_ganador
+# Escenas completamente listas
 
 

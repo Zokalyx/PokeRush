@@ -29,7 +29,8 @@
 #define Y_PUNTAJE 13
 #define X_PUNTAJE 37
 
-#define D_TRANSICION 500
+#define D_TRANSICION 500 / 30
+#define D_PUNTAJE 2000 / 30
 
 typedef struct escenario {
 	unsigned tiempo1, tiempo2;
@@ -87,13 +88,12 @@ enum pr_nombre_escena pr_ganador_eventos(void *escenario_void, int input,
 					 struct pr_contexto *contexto,
 					 estado_t *estado)
 {
-	// escenario_t *escenario = escenario_void;
-
 	if (islower(input))
 		input = toupper(input);
 
 	if (input == T_SALIR) {
 		return POKERUSH_MENU_PRINCIPAL;
+
 	} else if (input == T_REINTENTAR && contexto->intentos_restantes > 0) {
 		contexto->intentos_restantes--;
 		contexto->es_reintento = true;
@@ -134,9 +134,12 @@ void pr_ganador_graficos(void *escenario_void, pantalla_t *pantalla,
 	pantalla_texto(pantalla, X_TIEMPO2 + 8, Y_TIEMPO + 2, "%d",
 		       escenario->tiempo2);
 
+	unsigned puntaje_animado = (unsigned)ease_in_out(
+		contexto->frames_escena, D_TRANSICION, D_TRANSICION + D_PUNTAJE,
+		0, (int)escenario->puntaje);
 	pantalla_estilo_texto(pantalla, E_TITULO);
 	pantalla_texto(pantalla, X_PUNTAJE, Y_PUNTAJE, M_PUNTAJE,
-		       escenario->puntaje);
+		       puntaje_animado);
 
 	pantalla_estilo_texto(pantalla, E_NOMBRE);
 	pantalla_color_texto(pantalla, C_NOMBRE_1, 1.0f);
