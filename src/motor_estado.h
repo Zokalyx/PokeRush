@@ -1,0 +1,28 @@
+#ifndef __ESTADO_H__
+#define __ESTADO_H__
+
+typedef enum estado {
+	FINALIZADO_POR_USUARIO,
+	TERMINAL_MUY_CHICA,
+	ERROR_MEMORIA,
+	ERROR_STDOUT,
+	ERROR_CREACION_JUEGO,
+	JUEGO_INVALIDO,
+	PUNTERO_NULL,
+	CONFIGURACION_INVALIDA,
+	ERROR_CREACION_TP,
+	ERROR_ABRIR_BITMAP,
+	ERROR_LEER_BITMAP,
+	ERROR_BITMAP_INVALIDO,
+	ERROR_RECORRIDO_DIRECTORIO,
+	SENIAL_INTERRUPCION,
+	ERROR_CREACION_ESCENA,
+} estado_t;
+
+/**
+ * Muestra en pantalla un mensaje amigable
+ * al usuario.
+*/
+void estado_mostrar(estado_t estado);
+
+#endif // __ESTADO_H__

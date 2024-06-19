@@ -1,0 +1,33 @@
+# Clean
+
+- hash (copiado)
+- lista (copiado)
+- split
+- tp
+- motor_animacion
+- motor_color
+
+# Requires cleaning or modification
+
+- motor_estado
+- motor_input
+- motor_pantalla
+- motor_sprite
+- motor_tiempo
+- motor
+- pokerush
+- pokerush_carrera
+- pokerush_entrenador
+- pokerush_macros
+- pokerush_ganador
+- pokerush_informacion
+- pokerush_pokedex
+- pokerush_reglas
+- pokerush_splash_screen
+- pokerush_versus
+
+# Won't clean (unnecessary)
+
+- motor_directorio
+
+

@@ -1,0 +1,6 @@
+	// Activar esta línea para una fiesta
+	// (Seizure warning)
+	// if (color_1.r - color_2.r < 10 || color_2.r - color_2.r < 10)
+	// 	porcentaje *= 2;
+
+en color mezcla

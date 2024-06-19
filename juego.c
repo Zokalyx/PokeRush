@@ -1,14 +1,23 @@
-#include "src/tp.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include "src/motor.h"
+#include "src/motor_estado.h"
+#include "src/pokerush.h"
+
+#define CSV_POKEMONES "./pokemones_juego.csv"
+#define DIR_SPRITES "./sprites"
 
 int main(int argc, char const *argv[])
 {
-	//Se recomienda pasar el archivo de texto con los pokemon como argumento al ejecutar el programa
+	juego_t pokerush = pr_juego();
+	struct pr_config config = (struct pr_config){
+		.pokemones_csv = CSV_POKEMONES,
+		.sprites_dir = DIR_SPRITES,
+	};
 
-	//crear el juego
-	tp_crear(argv[1]);
-	//mostrar menues
-	//correr carrera
-	//etc
+	estado_t estado = motor_ejecutar_juego(&pokerush, &config);
 
-	return 0;
+	estado_mostrar(estado);
+
+	return estado;
 }
