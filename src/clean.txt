@@ -22,6 +22,7 @@
 - pokerush_menu_principal
 - pokerush_informacion
 - pokerush_reglas
+- pokerush_menu_juego
 
 # Requires cleaning or modification
 
