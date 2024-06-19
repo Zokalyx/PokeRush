@@ -20,13 +20,6 @@
 #define ESCAPE_UNIX '\x1b'
 #define STDIN_FILENO 0
 
-/**
- * Deshabilita el ECHO de caracteres
- * en la terminal y el modo canónico.
- * De esta manear no hay Line Buffering
- * y los caracteres pasan directamente
- * a stdin para ser leídos por el programa.
- */
 void deshabilitar_echo_terminal()
 {
 	// Obtener información sobre la terminal.
