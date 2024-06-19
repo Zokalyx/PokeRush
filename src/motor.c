@@ -1,7 +1,6 @@
 #include "motor.h"
 
 #include "motor_input.h"
-#include "motor_tiempo.h"
 #include "motor_pantalla.h"
 
 #include <stdint.h>
@@ -35,24 +34,18 @@ bool juego_valido(juego_t *juego)
 estado_t main_loop(juego_t *juego, void *estructura, pantalla_t *pantalla,
 		   unsigned frames_por_segundo)
 {
-	uint64_t ms_por_frame = 1000 / frames_por_segundo;
-
-	uint64_t tiempo_frame = 0;
-	uint64_t tiempo_antes, tiempo_muerto;
+	uint64_t frames_transcurridos = 0;
 
 	bool debug = false;
 
 	estado_t estado;
 	bool finalizar;
 	while (true) {
-		tiempo_antes = ms_actuales();
-
 		int input = leer_caracter();
 		if (input == T_DEBUG)
 			debug = !debug;
 
-		finalizar = juego->procesar_eventos(estructura, input,
-						    tiempo_frame, &estado);
+		finalizar = juego->procesar_eventos(estructura, input, &estado);
 		if (finalizar)
 			break;
 
@@ -66,18 +59,12 @@ estado_t main_loop(juego_t *juego, void *estructura, pantalla_t *pantalla,
 			pantalla_color_texto(pantalla, 127, 127, 127, 0.5f);
 			pantalla_color_fondo(pantalla, 0, 0, 0, 0.0f);
 			pantalla_estilo_texto(pantalla, false, false, false);
-			pantalla_texto(pantalla, 0, 0, "Tiempo frame: %d ms",
-				       tiempo_frame);
+			pantalla_texto(pantalla, 0, 0, "Frames: %d ms",
+				       frames_transcurridos);
 		}
+
 		pantalla_actualizar_frame(pantalla);
-
-		tiempo_frame = ms_actuales() - tiempo_antes;
-
-		if (tiempo_frame < ms_por_frame) {
-			tiempo_muerto = ms_por_frame - tiempo_frame;
-			sleep_ms(tiempo_muerto);
-			tiempo_frame += tiempo_muerto;
-		}
+		frames_transcurridos++;
 	}
 
 	return estado;
@@ -112,7 +99,7 @@ estado_t motor_ejecutar_juego(juego_t *juego, void *config_juego)
 
 	signal(SIGINT, handler_interrupcion);
 
-	srand((unsigned)ms_actuales());
+	srand(0);
 	deshabilitar_echo_terminal();
 	estado_t finalizacion = main_loop(juego, juego_struct, pantalla,
 					  config_motor.frames_por_segundo);

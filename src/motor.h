@@ -32,8 +32,7 @@ typedef struct juego {
 	// Procesamiento de eventos por input y por tiempo
 	// Devuelve si hay que finalizar con el juego o no.
 	// En caso de finalizar escribe en estado la razón de finalización.
-	bool (*procesar_eventos)(void *estructura, int input,
-				 uint64_t delta_tiempo_ms, estado_t *estado);
+	bool (*procesar_eventos)(void *estructura, int input, estado_t *estado);
 	// Generación de la imagen en pantalla para el contexto y tiempo actual
 	void (*dibujar_graficos)(void *estructura, pantalla_t *pantalla);
 	// Liberar toda la memoria asociada al juego

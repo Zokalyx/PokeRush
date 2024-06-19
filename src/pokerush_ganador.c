@@ -111,9 +111,9 @@ void pr_ganador_graficos(void *escenario_void, pantalla_t *pantalla,
 	// Fondo
 	// Transición suave
 	float opacidad_fondo =
-		(linear(contexto->tiempo_escena_ms, 0, D_TRANSICION_FONDO,
+		(linear(contexto->frames_escena, 0, D_TRANSICION_FONDO,
 			OPACIDAD_FONDO, 100) -
-		 linear(contexto->tiempo_escena_ms, D_TRANSICION_FONDO,
+		 linear(contexto->frames_escena, D_TRANSICION_FONDO,
 			2 * D_TRANSICION_FONDO, 0, (100 - OPACIDAD_FONDO))) /
 		100.0f;
 	pantalla_color_fondo(pantalla, B_PRINCIPAL, opacidad_fondo);
@@ -168,7 +168,7 @@ void pr_ganador_graficos(void *escenario_void, pantalla_t *pantalla,
 
 	// Transición
 	pantalla_color_fondo(pantalla, C_NORMAL, 1.0f);
-	int x = ease_in_out(contexto->tiempo_escena_ms, 0, D_TRANSICION, 0,
+	int x = ease_in_out(contexto->frames_escena, 0, D_TRANSICION, 0,
 			    ANCHO_PANTALLA / 2);
 	pantalla_rect(pantalla, 0, 0, (unsigned)(ANCHO_PANTALLA / 2 - x),
 		      ALTO_PANTALLA, ' ');

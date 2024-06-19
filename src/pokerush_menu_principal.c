@@ -147,15 +147,15 @@ void pr_menu_principal_graficos(void *escenario_void, pantalla_t *pantalla,
 
 	// Transición suave
 	float opacidad_fondo =
-		(linear(contexto->tiempo_escena_ms, 0, D_TRANSICION_FONDO,
+		(linear(contexto->frames_escena, 0, D_TRANSICION_FONDO,
 			OPACIDAD_FONDO, 100) -
-		 linear(contexto->tiempo_escena_ms, D_TRANSICION_FONDO,
+		 linear(contexto->frames_escena, D_TRANSICION_FONDO,
 			2 * D_TRANSICION_FONDO, 0, (100 - OPACIDAD_FONDO))) /
 		100.0f;
 
 	// Fondo
 	float progreso = contexto->primera_vez_en_menu ?
-				 linear(contexto->tiempo_escena_ms, 0,
+				 linear(contexto->frames_escena, 0,
 					D_TRANSICION_COLOR_FONDO, 0, 1) :
 				 1.0f;
 	color_t color_fondo = color_mezcla(color_crear(B_PRINCIPAL),

@@ -354,9 +354,9 @@ void pr_preparacion_graficos(void *escenario_void, pantalla_t *pantalla,
 
 	// Fondo
 	float opacidad_fondo =
-		(linear(contexto->tiempo_escena_ms, 0, D_TRANSICION_FONDO,
+		(linear(contexto->frames_escena, 0, D_TRANSICION_FONDO,
 			OPACIDAD_FONDO, 100) -
-		 linear(contexto->tiempo_escena_ms, D_TRANSICION_FONDO,
+		 linear(contexto->frames_escena, D_TRANSICION_FONDO,
 			2 * D_TRANSICION_FONDO, 0, (100 - OPACIDAD_FONDO))) /
 		100.0f;
 	pantalla_color_fondo(pantalla, B_PRINCIPAL, opacidad_fondo);

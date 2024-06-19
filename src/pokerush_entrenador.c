@@ -57,9 +57,9 @@ void pr_entrenador_graficos(void *escenario_void, pantalla_t *pantalla,
 
 	// Transición suave
 	float opacidad_fondo =
-		(linear(contexto->tiempo_escena_ms, 0, D_TRANSICION_FONDO,
+		(linear(contexto->frames_escena, 0, D_TRANSICION_FONDO,
 			OPACIDAD_FONDO, 100) -
-		 linear(contexto->tiempo_escena_ms, D_TRANSICION_FONDO,
+		 linear(contexto->frames_escena, D_TRANSICION_FONDO,
 			2 * D_TRANSICION_FONDO, 0, (100 - OPACIDAD_FONDO))) /
 		100.0f;
 
@@ -84,7 +84,7 @@ void pr_entrenador_graficos(void *escenario_void, pantalla_t *pantalla,
 	pantalla_estilo_texto(pantalla, E_NOMBRE);
 	pantalla_texto(pantalla, X_MARGEN, Y_INSTRUCCION + Y_SEPARACION,
 		       contexto->nombre_entrenador);
-	if (parpadeo(contexto->tiempo_escena_ms, D_CURSOR_TEXTO, false, true))
+	if (parpadeo(contexto->frames_escena, D_CURSOR_TEXTO, false, true))
 		pantalla_texto(pantalla,
 			       X_MARGEN + (int)escenario->letra_actual,
 			       Y_INSTRUCCION + Y_SEPARACION, "%c", '_');

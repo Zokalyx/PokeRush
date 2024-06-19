@@ -77,7 +77,7 @@ enum pr_nombre_escena pr_versus_eventos(void *escenario_void, int input,
 					struct pr_contexto *contexto,
 					estado_t *estado)
 {
-	if (contexto->tiempo_escena_ms > D_FAST1 + D_FAST2 + D_SLOW + D_RECT)
+	if (contexto->frames_escena > D_FAST1 + D_FAST2 + D_SLOW + D_RECT)
 		return POKERUSH_CARRERA;
 
 	return POKERUSH_VERSUS;
@@ -88,13 +88,13 @@ void pr_versus_graficos(void *escenario_void, pantalla_t *pantalla,
 {
 	escenario_t *escenario = escenario_void;
 
-	uint64_t t = contexto->tiempo_escena_ms;
+	uint64_t t = contexto->frames_escena;
 
 	// Fondo
 	float opacidad_fondo =
-		(linear(contexto->tiempo_escena_ms, 0, D_TRANSICION_FONDO,
+		(linear(contexto->frames_escena, 0, D_TRANSICION_FONDO,
 			OPACIDAD_FONDO, 100) -
-		 linear(contexto->tiempo_escena_ms, D_TRANSICION_FONDO,
+		 linear(contexto->frames_escena, D_TRANSICION_FONDO,
 			2 * D_TRANSICION_FONDO, 0,
 			(100 - OPACIDAD_FONDO) / 2)) /
 		100.0f;

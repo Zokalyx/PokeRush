@@ -55,7 +55,7 @@ void pr_splash_screen_graficos(void *escenario_void, pantalla_t *pantalla,
 {
 	escenario_t *escenario = escenario_void;
 
-	uint64_t t = contexto->tiempo_escena_ms;
+	uint64_t t = contexto->frames_escena;
 
 	// Fondo
 	float progreso = linear(t, 0, D_ANIMACION, 0, 1);

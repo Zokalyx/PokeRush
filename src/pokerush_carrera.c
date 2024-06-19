@@ -262,7 +262,7 @@ enum pr_nombre_escena pr_carrera_eventos(void *escenario_void, int input,
 {
 	escenario_t *escenario = escenario_void;
 
-	uint64_t t = contexto->tiempo_escena_ms;
+	uint64_t t = contexto->frames_escena;
 
 	if (!escenario->finalizado && escenario->jugador1->finalizo &&
 	    escenario->jugador2->finalizo && !escenario->jugador1->corriendo &&
@@ -465,7 +465,7 @@ void pr_carrera_graficos(void *escenario_void, pantalla_t *pantalla,
 {
 	escenario_t *escenario = escenario_void;
 
-	float opacidad = linear(contexto->tiempo_escena_ms, 0,
+	float opacidad = linear(contexto->frames_escena, 0,
 				D_TICK * TICKS_NUMERO_COUNTDOWN, 0, 1);
 
 	// Fondo
@@ -474,16 +474,16 @@ void pr_carrera_graficos(void *escenario_void, pantalla_t *pantalla,
 
 	// Pista
 	dibujar_pista(escenario->pista, escenario->jugador1, pantalla,
-		      contexto->tiempo_escena_ms, X_PISTA1, opacidad);
+		      contexto->frames_escena, X_PISTA1, opacidad);
 	dibujar_pista(escenario->pista, escenario->jugador2, pantalla,
-		      contexto->tiempo_escena_ms, X_PISTA2, opacidad);
+		      contexto->frames_escena, X_PISTA2, opacidad);
 
 	// Obstáculos que se ven por atrás del pokemon
 	dibujar_obstaculos_back(escenario, escenario->jugador1, pantalla,
-				contexto->tiempo_escena_ms, X_OBSTACULO1,
+				contexto->frames_escena, X_OBSTACULO1,
 				opacidad);
 	dibujar_obstaculos_back(escenario, escenario->jugador2, pantalla,
-				contexto->tiempo_escena_ms, X_OBSTACULO2,
+				contexto->frames_escena, X_OBSTACULO2,
 				opacidad);
 
 	// Pokemones
@@ -494,29 +494,29 @@ void pr_carrera_graficos(void *escenario_void, pantalla_t *pantalla,
 
 	// Obstáculos que se ven por en frente del pokemon
 	dibujar_obstaculos_front(escenario, escenario->jugador1, pantalla,
-				 contexto->tiempo_escena_ms, X_OBSTACULO1,
+				 contexto->frames_escena, X_OBSTACULO1,
 				 opacidad);
 	dibujar_obstaculos_front(escenario, escenario->jugador2, pantalla,
-				 contexto->tiempo_escena_ms, X_OBSTACULO2,
+				 contexto->frames_escena, X_OBSTACULO2,
 				 opacidad);
 
 	// Countdown
-	if (contexto->tiempo_escena_ms <
+	if (contexto->frames_escena <
 	    D_TICK * TICKS_NUMERO_COUNTDOWN * CANTIDAD_COUNTDOWN) {
-		size_t idx = (contexto->tiempo_escena_ms / D_TICK) /
+		size_t idx = (contexto->frames_escena / D_TICK) /
 			     TICKS_NUMERO_COUNTDOWN;
 		pantalla_sprite(pantalla, X_COUNTDOWN, Y_COUNTDOWN,
 				escenario->countdown[idx], 1.0f);
 	}
 
 	// Timers
-	dibujar_timers(escenario->jugador1, pantalla,
-		       contexto->tiempo_escena_ms, X_TIEMPO1, opacidad);
-	dibujar_timers(escenario->jugador2, pantalla,
-		       contexto->tiempo_escena_ms, X_TIEMPO2, opacidad);
+	dibujar_timers(escenario->jugador1, pantalla, contexto->frames_escena,
+		       X_TIEMPO1, opacidad);
+	dibujar_timers(escenario->jugador2, pantalla, contexto->frames_escena,
+		       X_TIEMPO2, opacidad);
 
 	float opacidad_super_efectivo =
-		linear(contexto->tiempo_escena_ms % D_TICK, 0, D_TICK, 1, 0);
+		linear(contexto->frames_escena % D_TICK, 0, D_TICK, 1, 0);
 	pantalla_color_texto(pantalla, C_EFECTIVO, opacidad_super_efectivo);
 	if (escenario->jugador1->super_efectivo)
 		pantalla_texto(pantalla, P_EFECTIVO1, M_EFECTIVO);
@@ -525,9 +525,9 @@ void pr_carrera_graficos(void *escenario_void, pantalla_t *pantalla,
 
 	// Transición final
 	if (escenario->finalizado &&
-	    contexto->tiempo_escena_ms > escenario->tiempo_final) {
+	    contexto->frames_escena > escenario->tiempo_final) {
 		int x_externo = ease_in_out(
-			contexto->tiempo_escena_ms - escenario->tiempo_final, 0,
+			contexto->frames_escena - escenario->tiempo_final, 0,
 			D_TICK * TICKS_END, 0, ANCHO_PANTALLA / 2);
 
 		pantalla_color_fondo(pantalla, C_NORMAL, 1.0f);

@@ -173,7 +173,7 @@ void *pokerush_iniciar(void *configuracion_void, estado_t *estado)
 
 	estructura->contexto = (struct pr_contexto){
 		.primera_vez_en_menu = true,
-		.tiempo_escena_ms = 0,
+		.frames_escena = 0,
 		.tp = tp,
 		.sprites = sprites,
 		.pokemones = pokemones,
@@ -202,12 +202,12 @@ void *pokerush_iniciar(void *configuracion_void, estado_t *estado)
 }
 
 bool pokerush_procesar_eventos(void *estructura_void, int input,
-			       uint64_t delta_tiempo_ms, estado_t *estado)
+			       estado_t *estado)
 {
 	struct pokerush *estructura = estructura_void;
 	struct pr_contexto *contexto = &estructura->contexto;
 
-	contexto->tiempo_escena_ms += delta_tiempo_ms;
+	contexto->frames_escena++;
 
 	enum pr_nombre_escena indice_actual = estructura->escena_actual;
 
@@ -224,7 +224,7 @@ bool pokerush_procesar_eventos(void *estructura_void, int input,
 		if (indice_nuevo == POKERUSH_CERRAR)
 			return true;
 
-		contexto->tiempo_escena_ms = 0;
+		contexto->frames_escena = 0;
 		estructura->escena_actual = indice_nuevo;
 
 		escena = estructura->escenas[indice_nuevo];
