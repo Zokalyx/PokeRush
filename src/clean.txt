@@ -23,14 +23,13 @@
 - pokerush_informacion
 - pokerush_reglas
 - pokerush_menu_juego
+- pokerush_pokedex
 
 # Requires cleaning or modification
 
 - pokerush_carrera
 - pokerush_ganador
-- pokerush_pokedex
 - pokerush_versus
-- pokerush_menu_juego
 - pokerush_preparacion
 
 
