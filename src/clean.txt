@@ -12,18 +12,20 @@
 - pokerush
 - motor
 - motor_estado
+- pokerush_splash_screen
 
 # Requires cleaning or modification
 
-- motor_estado
+- pokerush_macros
 - pokerush_carrera
 - pokerush_entrenador
-- pokerush_macros
 - pokerush_ganador
 - pokerush_informacion
 - pokerush_pokedex
 - pokerush_reglas
-- pokerush_splash_screen
 - pokerush_versus
+- pokerush_menu_juego
+- pokerush_menu_principal
+- pokerush_preparacion
 
 
