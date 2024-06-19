@@ -144,7 +144,7 @@ pantalla_t *pantalla_crear(unsigned ancho, unsigned alto, estado_t *estado)
 		configurar_stdout(TAMANIO_BUFFER_STDOUT * sizeof(char));
 	if (buffer_stdout == NULL) {
 		if (estado != NULL)
-			*estado = ERROR_STDOUT;
+			*estado = ERROR_BUFFER_STDOUT;
 		return NULL;
 	}
 

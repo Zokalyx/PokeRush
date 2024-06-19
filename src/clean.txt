@@ -11,6 +11,7 @@
 - motor_pantalla
 - pokerush
 - motor
+- motor_estado
 
 # Requires cleaning or modification
 

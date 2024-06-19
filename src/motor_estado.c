@@ -16,17 +16,11 @@ void estado_mostrar(estado_t estado)
 	switch (estado) {
 	case FINALIZADO_POR_USUARIO:
 		break;
-	case TERMINAL_MUY_CHICA:
-		printf("Terminal muy pequeña, agrandala (o hacé zoom hacia afuera) y probá de nuevo.");
-		break;
 	case ERROR_MEMORIA:
 		printf("Error al malloc'ear! Hay poca memoria disponible?");
 		break;
-	case ERROR_STDOUT:
+	case ERROR_BUFFER_STDOUT:
 		printf("Error al configurar stdout.");
-		break;
-	case ERROR_CREACION_JUEGO:
-		printf("Error al crear el juego :(");
 		break;
 	case ERROR_CREACION_ESCENA:
 		printf("Error al crear una escena del juego :(");
@@ -37,7 +31,7 @@ void estado_mostrar(estado_t estado)
 	case PUNTERO_NULL:
 		printf("Hay algún puntero importante en NULL.");
 		break;
-	case CONFIGURACION_INVALIDA:
+	case CONFIGURACION_JUEGO_INVALIDA:
 		printf("La configuración pasada es inválida.");
 		break;
 	case ERROR_CREACION_TP:
@@ -49,17 +43,11 @@ void estado_mostrar(estado_t estado)
 	case ERROR_LECTURA_SPRITE:
 		printf("Error al leer un sprite.");
 		break;
-	case ERROR_ABRIR_BITMAP:
-		printf("Error al abrir una imagen Bitmap.");
-		break;
 	case ERROR_LEER_BITMAP:
 		printf("Error al leer una imagen Bitmap.");
 		break;
 	case ERROR_BITMAP_INVALIDO:
 		printf("Error al leer una imagen Bitmap.");
-		break;
-	case ERROR_RECORRIDO_DIRECTORIO:
-		printf("Error al recorrer archivos.");
 		break;
 	case SENIAL_INTERRUPCION:
 		printf("Señal de interrupción recibida.");

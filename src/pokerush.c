@@ -142,7 +142,7 @@ void *pokerush_iniciar(void *configuracion_void, estado_t *estado)
 {
 	struct pr_config *configuracion = configuracion_void;
 	if (configuracion == NULL) {
-		*estado = CONFIGURACION_INVALIDA;
+		*estado = CONFIGURACION_JUEGO_INVALIDA;
 		return NULL;
 	}
 
