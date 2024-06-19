@@ -1,8 +1,8 @@
 # TODO
 
 - Función común para la opacidad inicial en cada escena.
-- Eliminar valores y números mágicos.
-- Crear subfunciones para funciones largas.
+- Eliminar valores y números mágicos en escenas.
+- Crear subfunciones para funciones largas en escenas.
 
 # Clean
 
@@ -27,11 +27,11 @@
 - pokerush_menu_juego
 - pokerush_pokedex
 - pokerush_preparacion
+- pokerush_versus
 
 # Requires cleaning or modification
 
 - pokerush_carrera
 - pokerush_ganador
-- pokerush_versus
 
 
