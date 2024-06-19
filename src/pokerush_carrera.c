@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#define D_TICK 500
+#define D_TICK (500 / 30)
 #define C_TEXTO 25, 25, 25
 #define B_SUMA_TIEMPO 200, 100, 50
 #define B_TIEMPO_NORMAL 255, 255, 255
@@ -52,27 +52,44 @@
 #define M_EFECTIVO "Super efectivo!"
 
 typedef struct jugador {
+	// Sprite.
 	void *pokemon;
+	// Cuánto tarda el pokémon por cada obstáculo.
+	// (sí, ya se sabe antes de siquiera comenzar la carrera)
 	unsigned *tiempos;
-	char *obstaculos;
-	int obstaculo_actual;
+	// Aumenta dinámicamente a medida que avanza la carrera.
 	unsigned tiempo_total;
-	bool corriendo;
-	bool finalizo;
-	bool aumento_tiempo;
+	// Obstáculos en formato string.
+	char *obstaculos;
 	size_t cantidad_obstaculos;
+	// Comienza en -1 antes de estar en ningún obstáculo.
+	int obstaculo_actual;
+	// Mostrar la animación de movimiento
+	bool corriendo;
+	// Llegó a la meta.
+	bool finalizo;
+	// El TICK anterior estuvo en un obstáculo y aumentó el tiempo gastado.
+	bool aumento_tiempo;
+	// El TICK anterior atravesó un obstáculo con 0 tiempo utilizado.
 	bool super_efectivo;
 } jugador_t;
 
 typedef struct escenario {
+	// La carrera se maneja en TICKs, aproximadamente equivalente a
+	// segundos.
 	unsigned tick_actual;
 	jugador_t *jugador1, *jugador2;
+	// Sprites para animar el movimiento de la pista.
 	void *pista[FRAMES_PISTA];
+	// Sprites para animar el countdown al comienzo.
 	void *countdown[CANTIDAD_COUNTDOWN];
+	// Sprites varios.
 	void *meta, *pared, *tunel_front, *tunel_back, *escombros_back,
 		*puerta_cerrada, *puerta_abierta_front, *puerta_abierta_back,
 		*escombros_front;
+	// Ambos pokémon finalizaron.
 	bool finalizado;
+	// Valor auxiliar para manejar la animación final.
 	uint64_t tiempo_final;
 } escenario_t;
 
@@ -158,8 +175,13 @@ void tick_jugador(jugador_t *jugador)
 		jugador->super_efectivo = false;
 
 	if (jugador->corriendo) {
+		// Recién NO estuvo con un obstáculo,
+		// así que ahora se topa con uno.
 		jugador->aumento_tiempo = false;
 		jugador->corriendo = false;
+
+		// Verificar si en realidad podemos seguir de largo
+		// gracias a una super efectividad.
 		if (!jugador->finalizo && jugador->tiempos[i] == 0) {
 			jugador->corriendo = true;
 			jugador->super_efectivo = true;
@@ -167,6 +189,7 @@ void tick_jugador(jugador_t *jugador)
 			if (i == jugador->cantidad_obstaculos - 1)
 				jugador->finalizo = true;
 		}
+
 		return;
 	}
 
@@ -230,6 +253,9 @@ void *pr_carrera_iniciar(struct pr_contexto *contexto)
 	}
 
 	escenario->tick_actual = 0;
+	escenario->finalizado = false;
+
+	// SPRITES.
 
 	escenario->pista[0] = hash_obtener(sprites, "pista1");
 	escenario->pista[1] = hash_obtener(sprites, "pista2");
@@ -241,17 +267,19 @@ void *pr_carrera_iniciar(struct pr_contexto *contexto)
 	escenario->countdown[2] = hash_obtener(sprites, "one");
 
 	escenario->meta = hash_obtener(sprites, "meta");
+
 	escenario->pared = hash_obtener(sprites, "pared");
+	escenario->escombros_back = hash_obtener(sprites, "escombros_back");
+	escenario->escombros_front = hash_obtener(sprites, "escombros_front");
+
 	escenario->tunel_back = hash_obtener(sprites, "tunel_back");
 	escenario->tunel_front = hash_obtener(sprites, "tunel_front");
+
 	escenario->puerta_cerrada = hash_obtener(sprites, "puerta_cerrada");
 	escenario->puerta_abierta_back =
 		hash_obtener(sprites, "puerta_abierta_back");
 	escenario->puerta_abierta_front =
 		hash_obtener(sprites, "puerta_abierta_front");
-	escenario->escombros_back = hash_obtener(sprites, "escombros_back");
-	escenario->escombros_front = hash_obtener(sprites, "escombros_front");
-	escenario->finalizado = false;
 
 	return escenario;
 }
@@ -264,19 +292,24 @@ enum pr_nombre_escena pr_carrera_eventos(void *escenario_void, int input,
 
 	uint64_t t = contexto->frames_escena;
 
+	// Verificar si finalizamos.
 	if (!escenario->finalizado && escenario->jugador1->finalizo &&
 	    escenario->jugador2->finalizo && !escenario->jugador1->corriendo &&
 	    !escenario->jugador2->corriendo) {
 		escenario->finalizado = true;
 		escenario->tiempo_final = t;
+
 	} else if (escenario->finalizado &&
 		   t - escenario->tiempo_final > D_TICK * TICKS_END) {
+		// Verificar si terminó animación final.
 		return POKERUSH_GANADOR;
 	}
 
+	// Countdown, no hacer nada.
 	if (t < D_TICK * TICKS_NUMERO_COUNTDOWN * CANTIDAD_COUNTDOWN)
 		return POKERUSH_CARRERA;
 
+	// Verificar si estámos en un nuevo tick.
 	unsigned tick_real =
 		(unsigned)(t / D_TICK -
 			   TICKS_NUMERO_COUNTDOWN * CANTIDAD_COUNTDOWN);
@@ -284,6 +317,7 @@ enum pr_nombre_escena pr_carrera_eventos(void *escenario_void, int input,
 		// Ya estamos actualizados.
 		return POKERUSH_CARRERA;
 
+	// Finalmente, actualizemos.
 	escenario->tick_actual = tick_real;
 	tick_jugador(escenario->jugador1);
 	tick_jugador(escenario->jugador2);
