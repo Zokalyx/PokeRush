@@ -12,6 +12,12 @@ float linear(uint64_t tiempo, uint64_t tiempo_comienzo, uint64_t tiempo_fin,
 	     int inicio, int fin);
 
 /**
+ * Movimiento de "ida y vuelta" hasta un valor pico en base al movimiento linear.
+ */
+float pulso(uint64_t tiempo, uint64_t tiempo_comienzo, uint64_t tiempo_fin,
+	    int inicio, int pico);
+
+/**
  * Movimiento no lineal con comienzo y final suaves.
 */
 int ease_in_out(uint64_t tiempo, uint64_t tiempo_comienzo, uint64_t tiempo_fin,

@@ -16,6 +16,7 @@
 #define Y_NOMBRE_1 6
 #define X_SPRITE 50
 #define Y_SEPARACION_ATRIBUTO 2
+#define Y_SEPARACION_LISTA 2
 #define Y_SPRITE 2
 
 typedef struct escenario {
@@ -83,7 +84,6 @@ void pr_pokedex_graficos(void *escenario_void, pantalla_t *pantalla,
 	escenario_t *escenario = escenario_void;
 
 	// Fondo
-	// Transición suave
 	float opacidad_fondo =
 		(linear(contexto->frames_escena, 0, D_TRANSICION_FONDO,
 			OPACIDAD_FONDO, 100) -
@@ -107,15 +107,16 @@ void pr_pokedex_graficos(void *escenario_void, pantalla_t *pantalla,
 			pantalla_color_texto(pantalla, C_SELECCION, 1.0f);
 		}
 
-		pantalla_texto(pantalla, X_MARGEN, Y_NOMBRE_1 + 2 * i,
+		int y_nombre = Y_NOMBRE_1 + Y_SEPARACION_LISTA * i;
+		pantalla_texto(pantalla, X_MARGEN, y_nombre,
 			       contexto->pokemones[i]->nombre);
 
 		if (escenario->seleccion == i) {
 			pantalla_color_fondo(pantalla, B_PRINCIPAL, 1.0f);
 
 			pantalla_color_texto(pantalla, B_SELECCION, 1.0f);
-			pantalla_texto(pantalla, X_MARGEN - 2,
-				       Y_NOMBRE_1 + 2 * i, "%c", S_OPCION);
+			pantalla_texto(pantalla, X_MARGEN - 2, y_nombre, "%c",
+				       S_OPCION);
 			pantalla_color_texto(pantalla, C_NORMAL, 1.0f);
 		}
 	}
@@ -125,21 +126,20 @@ void pr_pokedex_graficos(void *escenario_void, pantalla_t *pantalla,
 		contexto->pokemones[escenario->seleccion];
 	pantalla_color_texto(pantalla, C_FUERZA, 1.0f);
 	int y = Y_SPRITE + Y_POKEMON + Y_SEPARACION_ATRIBUTO;
-	pantalla_texto(pantalla, X_SPRITE + 2, y, M_FUERZA);
-	pantalla_texto(pantalla, X_SPRITE + X_POKEMON - 4, y, "%d",
-		       pokemon->fuerza);
+	int x_left = X_SPRITE + 2;
+	int x_right = X_SPRITE + X_POKEMON - 4;
+	pantalla_texto(pantalla, x_left, y, M_FUERZA);
+	pantalla_texto(pantalla, x_right, y, "%d", pokemon->fuerza);
 
 	y += Y_SEPARACION_ATRIBUTO;
 	pantalla_color_texto(pantalla, C_DESTREZA, 1.0f);
-	pantalla_texto(pantalla, X_SPRITE + 2, y, M_DESTREZA);
-	pantalla_texto(pantalla, X_SPRITE + X_POKEMON - 4, y, "%d",
-		       pokemon->destreza);
+	pantalla_texto(pantalla, x_left, y, M_DESTREZA);
+	pantalla_texto(pantalla, x_right, y, "%d", pokemon->destreza);
 
 	y += Y_SEPARACION_ATRIBUTO;
 	pantalla_color_texto(pantalla, C_INTELIGENCIA, 1.0f);
-	pantalla_texto(pantalla, X_SPRITE + 2, y, M_INTELIGENCIA);
-	pantalla_texto(pantalla, X_SPRITE + X_POKEMON - 4, y, "%d",
-		       pokemon->inteligencia);
+	pantalla_texto(pantalla, x_left, y, M_INTELIGENCIA);
+	pantalla_texto(pantalla, x_right, y, "%d", pokemon->inteligencia);
 
 	// Sprite
 	const void *sprite = escenario->sprites[escenario->seleccion];
@@ -150,6 +150,7 @@ void pr_pokedex_graficos(void *escenario_void, pantalla_t *pantalla,
 	pantalla_estilo_texto(pantalla, E_CONTROL);
 	pantalla_texto(pantalla, X_CONTROL_1, Y_CONTROL, M_ARRIBA);
 	pantalla_texto(pantalla, X_CONTROL_2, Y_CONTROL, M_ABAJO);
+
 	pantalla_texto(pantalla, X_SALIR, Y_CONTROL, M_VOLVER);
 }
 

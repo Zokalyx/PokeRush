@@ -29,7 +29,7 @@
 #define Y_MARGEN 5
 #define B_INICIAL 0, 0, 0
 #define B_PRINCIPAL 10, 50, 60
-#define OPACIDAD_FONDO 25 // de 100
+#define OPACIDAD_FONDO 35 // de 100
 #define D_TRANSICION_FONDO 750 / 30
 #define B_CARRERA 100, 200, 100
 

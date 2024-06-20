@@ -24,6 +24,8 @@
 #define X_TIEMPO1 25
 #define X_TIEMPO2 55
 #define Y_TIEMPO 5
+#define X_OFFSET_TIEMPO 8
+#define Y_OFFSET_TIEMPO 2
 
 #define M_PUNTAJE "Tu puntaje: %d / 100"
 #define Y_PUNTAJE 13
@@ -31,6 +33,8 @@
 
 #define D_TRANSICION 500 / 30
 #define D_PUNTAJE 2000 / 30
+
+#define PUNTAJE_MAXIMO 100
 
 typedef struct escenario {
 	unsigned tiempo1, tiempo2;
@@ -59,11 +63,12 @@ void *pr_ganador_iniciar(struct pr_contexto *contexto)
 	escenario->tiempo1 = tiempo1;
 	escenario->tiempo2 = tiempo2;
 	if (tiempo1 == 0 && tiempo2 == 0)
-		escenario->puntaje = 100;
+		escenario->puntaje = PUNTAJE_MAXIMO;
 	else
 		escenario->puntaje =
-			(unsigned)(100 -
-				   100 * abs((int)tiempo1 - (int)tiempo2) /
+			(unsigned)(PUNTAJE_MAXIMO -
+				   PUNTAJE_MAXIMO *
+					   abs((int)tiempo1 - (int)tiempo2) /
 					   ((int)tiempo1 + (int)tiempo2));
 
 	switch (contexto->dificultad) {
@@ -109,13 +114,9 @@ void pr_ganador_graficos(void *escenario_void, pantalla_t *pantalla,
 	escenario_t *escenario = escenario_void;
 
 	// Fondo
-	// Transición suave
-	float opacidad_fondo =
-		(linear(contexto->frames_escena, 0, D_TRANSICION_FONDO,
-			OPACIDAD_FONDO, 100) -
-		 linear(contexto->frames_escena, D_TRANSICION_FONDO,
-			2 * D_TRANSICION_FONDO, 0, (100 - OPACIDAD_FONDO))) /
-		100.0f;
+	float opacidad_fondo = pulso(contexto->frames_escena, 0,
+				     D_TRANSICION_FONDO, OPACIDAD_FONDO, 100) /
+			       100.0f;
 	pantalla_color_fondo(pantalla, B_PRINCIPAL, opacidad_fondo);
 	pantalla_fondo(pantalla);
 	pantalla_color_fondo(pantalla, C_TRANSPARENTE);
@@ -128,11 +129,11 @@ void pr_ganador_graficos(void *escenario_void, pantalla_t *pantalla,
 	// Puntaje
 	pantalla_estilo_texto(pantalla, E_NORMAL);
 	pantalla_texto(pantalla, X_TIEMPO1, Y_TIEMPO, M_TIEMPO_DE);
-	pantalla_texto(pantalla, X_TIEMPO1 + 8, Y_TIEMPO + 2, "%d",
-		       escenario->tiempo1);
+	pantalla_texto(pantalla, X_TIEMPO1 + X_OFFSET_TIEMPO,
+		       Y_TIEMPO + Y_OFFSET_TIEMPO, "%d", escenario->tiempo1);
 	pantalla_texto(pantalla, X_TIEMPO2, Y_TIEMPO, M_TIEMPO_DE);
-	pantalla_texto(pantalla, X_TIEMPO2 + 8, Y_TIEMPO + 2, "%d",
-		       escenario->tiempo2);
+	pantalla_texto(pantalla, X_TIEMPO2 + X_OFFSET_TIEMPO,
+		       Y_TIEMPO + Y_OFFSET_TIEMPO, "%d", escenario->tiempo2);
 
 	unsigned puntaje_animado = (unsigned)ease_in_out(
 		contexto->frames_escena, D_TRANSICION, D_TRANSICION + D_PUNTAJE,
@@ -169,7 +170,7 @@ void pr_ganador_graficos(void *escenario_void, pantalla_t *pantalla,
 			       contexto->intentos_restantes);
 	pantalla_texto(pantalla, X_SALIR, Y_CONTROL, M_VOLVER);
 
-	// Transición
+	// Transición inicial
 	pantalla_color_fondo(pantalla, C_NORMAL, 1.0f);
 	int x = ease_in_out(contexto->frames_escena, 0, D_TRANSICION, 0,
 			    ANCHO_PANTALLA / 2);

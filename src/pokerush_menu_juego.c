@@ -154,12 +154,9 @@ void pr_menu_juego_graficos(void *escenario_void, pantalla_t *pantalla,
 	escenario_t *escenario = escenario_void;
 
 	// Fondo
-	float opacidad_fondo =
-		(linear(contexto->frames_escena, 0, D_TRANSICION_FONDO,
-			OPACIDAD_FONDO, 100) -
-		 linear(contexto->frames_escena, D_TRANSICION_FONDO,
-			2 * D_TRANSICION_FONDO, 0, (100 - OPACIDAD_FONDO))) /
-		100.0f;
+	float opacidad_fondo = pulso(contexto->frames_escena, 0,
+				     D_TRANSICION_FONDO, OPACIDAD_FONDO, 100) /
+			       100.0f;
 	pantalla_color_fondo(pantalla, B_PRINCIPAL, opacidad_fondo);
 	pantalla_fondo(pantalla);
 	pantalla_color_fondo(pantalla, C_TRANSPARENTE);
@@ -204,6 +201,7 @@ void pr_menu_juego_graficos(void *escenario_void, pantalla_t *pantalla,
 	pantalla_texto(pantalla, X_CONTROL_2, Y_CONTROL, M_ABAJO);
 	if (escenario->seleccion != -1)
 		pantalla_texto(pantalla, X_CONTROL_3, Y_CONTROL, M_ENTER);
+
 	pantalla_texto(pantalla, X_SALIR, Y_CONTROL, M_VOLVER);
 }
 

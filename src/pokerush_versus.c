@@ -77,6 +77,7 @@ enum pr_nombre_escena pr_versus_eventos(void *escenario_void, int input,
 					struct pr_contexto *contexto,
 					estado_t *estado)
 {
+	// La escena termina sola, no se puede saltear.
 	if (contexto->frames_escena > D_FAST1 + D_FAST2 + D_SLOW + D_RECT)
 		return POKERUSH_CARRERA;
 
@@ -91,13 +92,9 @@ void pr_versus_graficos(void *escenario_void, pantalla_t *pantalla,
 	uint64_t t = contexto->frames_escena;
 
 	// Fondo
-	float opacidad_fondo =
-		(linear(contexto->frames_escena, 0, D_TRANSICION_FONDO,
-			OPACIDAD_FONDO, 100) -
-		 linear(contexto->frames_escena, D_TRANSICION_FONDO,
-			2 * D_TRANSICION_FONDO, 0,
-			(100 - OPACIDAD_FONDO) / 2)) /
-		100.0f;
+	float opacidad_fondo = pulso(contexto->frames_escena, 0,
+				     D_TRANSICION_FONDO, OPACIDAD_FONDO, 100) /
+			       100.0f;
 	if (t > D_FAST1 + D_SLOW + (D_FAST2 + D_RECT) / 2)
 		pantalla_color_fondo(pantalla, B_CARRERA, opacidad_fondo);
 	else
@@ -122,16 +119,19 @@ void pr_versus_graficos(void *escenario_void, pantalla_t *pantalla,
 	pantalla_estilo_texto(pantalla, E_NOMBRE);
 	pantalla_color_fondo(pantalla, C_TRANSPARENTE);
 
+	// Nombre1
 	pantalla_color_texto(pantalla, C_NOMBRE_1, 1.0f);
 	pantalla_texto(pantalla, escenario->x_nombre1 + x_nombre_extra,
 		       Y_NOMBRE_START, contexto->nombre_entrenador);
 
+	// Nombre2
 	pantalla_color_texto(pantalla, C_NOMBRE_2, 1.0f);
 	pantalla_texto(pantalla, escenario->x_nombre2 - x_nombre_extra,
 		       Y_NOMBRE_START + 2 * y_versus, escenario->nombre2);
 
 	float opacidad = linear(t, 0, D_FAST1 / 2, 1, 0);
 
+	// "Vs"
 	pantalla_estilo_texto(pantalla, E_NORMAL);
 	pantalla_color_texto(pantalla, C_NORMAL, opacidad);
 	pantalla_texto(pantalla, X_VERSUS, Y_NOMBRE_START + y_versus, M_VERSUS);

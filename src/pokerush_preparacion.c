@@ -23,6 +23,8 @@
 #define S_LEFT '<'
 #define S_RIGHT '>'
 
+#define Y_SEPARACION_OBSTACULOS 2
+
 typedef struct seleccion {
 	size_t pokemon_idx;
 	size_t cantidad_obstaculos;
@@ -257,6 +259,83 @@ void guardar_seleccion_en_tp(TP *tp, const struct pokemon_info **pokemones,
 				     i);
 }
 
+/**
+ * Cambia de pokémon u obstáculo según corresponda (al siguiente)
+ */
+void flecha_derecha(struct pr_contexto *contexto, escenario_t *escenario)
+{
+	int modificando = escenario->modificando;
+
+	seleccion_t *seleccion = &escenario->seleccion1;
+	if (modificando == -1) {
+		// Cambiar pokemon (evitar que sean iguales)
+		size_t step =
+			(seleccion->pokemon_idx + 1) %
+						contexto->cantidad_pokemones ==
+					escenario->seleccion2.pokemon_idx ?
+				2 :
+				1;
+		seleccion->pokemon_idx = (seleccion->pokemon_idx + step) %
+					 contexto->cantidad_pokemones;
+		return;
+	}
+
+	if (!seleccion->obstaculos_activados[modificando]) {
+		// Activar
+		seleccion->obstaculos[modificando] = 0;
+		seleccion->obstaculos_activados[modificando] = true;
+		return;
+	}
+
+	if (seleccion->obstaculos[modificando] == NUM_ATRIBUTOS - 1) {
+		// Desactivar
+		seleccion->obstaculos_activados[modificando] = false;
+		return;
+	}
+
+	// Ciclar
+	seleccion->obstaculos[modificando]++;
+}
+
+/**
+ * Cambia de pokémon u obstáculo según corresponda (al anterior)
+ */
+void flecha_izquierda(struct pr_contexto *contexto, escenario_t *escenario)
+{
+	int modificando = escenario->modificando;
+
+	seleccion_t *seleccion = &escenario->seleccion1;
+	if (modificando == -1) {
+		// Cambiar pokemon
+		size_t step =
+			seleccion->pokemon_idx ==
+					(escenario->seleccion2.pokemon_idx +
+					 1) % contexto->cantidad_pokemones ?
+				2 :
+				1;
+		seleccion->pokemon_idx = (seleccion->pokemon_idx +
+					  contexto->cantidad_pokemones - step) %
+					 contexto->cantidad_pokemones;
+		return;
+	}
+
+	if (!seleccion->obstaculos_activados[modificando]) {
+		// Activar
+		seleccion->obstaculos[modificando] = NUM_ATRIBUTOS - 1;
+		seleccion->obstaculos_activados[modificando] = true;
+		return;
+	}
+
+	if (seleccion->obstaculos[modificando] == 0) {
+		// Desactivar
+		seleccion->obstaculos_activados[modificando] = false;
+		return;
+	}
+
+	// Ciclar
+	seleccion->obstaculos[modificando]--;
+}
+
 enum pr_nombre_escena pr_preparacion_eventos(void *escenario_void, int input,
 					     struct pr_contexto *contexto,
 					     estado_t *estado)
@@ -282,72 +361,12 @@ enum pr_nombre_escena pr_preparacion_eventos(void *escenario_void, int input,
 		break;
 
 	case FLECHA_DERECHA: {
-		seleccion_t *seleccion = &escenario->seleccion1;
-		if (modificando == -1) {
-			// Cambiar pokemon (evitar que sean iguales)
-			size_t step = (seleccion->pokemon_idx +
-				       1) % contexto->cantidad_pokemones ==
-						      escenario->seleccion2
-							      .pokemon_idx ?
-					      2 :
-					      1;
-			seleccion->pokemon_idx =
-				(seleccion->pokemon_idx + step) %
-				contexto->cantidad_pokemones;
-			break;
-		}
-
-		if (!seleccion->obstaculos_activados[modificando]) {
-			// Activar
-			seleccion->obstaculos[modificando] = 0;
-			seleccion->obstaculos_activados[modificando] = true;
-			break;
-		}
-
-		if (seleccion->obstaculos[modificando] == NUM_ATRIBUTOS - 1) {
-			// Desactivar
-			seleccion->obstaculos_activados[modificando] = false;
-			break;
-		}
-
-		// Ciclar
-		seleccion->obstaculos[modificando]++;
+		flecha_derecha(contexto, escenario);
 		break;
 	}
 
 	case FLECHA_IZQUIERDA: {
-		seleccion_t *seleccion = &escenario->seleccion1;
-		if (modificando == -1) {
-			// Cambiar pokemon
-			size_t step =
-				seleccion->pokemon_idx ==
-						(escenario->seleccion2
-							 .pokemon_idx +
-						 1) % contexto->cantidad_pokemones ?
-					2 :
-					1;
-			seleccion->pokemon_idx =
-				(seleccion->pokemon_idx +
-				 contexto->cantidad_pokemones - step) %
-				contexto->cantidad_pokemones;
-			break;
-		}
-
-		if (!seleccion->obstaculos_activados[modificando]) {
-			// Activar
-			seleccion->obstaculos[modificando] = NUM_ATRIBUTOS - 1;
-			seleccion->obstaculos_activados[modificando] = true;
-			break;
-		}
-
-		if (seleccion->obstaculos[modificando] == 0) {
-			// Desactivar
-			seleccion->obstaculos_activados[modificando] = false;
-			break;
-		}
-
-		// Ciclar
-		seleccion->obstaculos[modificando]--;
+		flecha_izquierda(contexto, escenario);
 		break;
 	}
 
@@ -364,36 +383,14 @@ enum pr_nombre_escena pr_preparacion_eventos(void *escenario_void, int input,
 	return POKERUSH_PREPARACION;
 }
 
-void pr_preparacion_graficos(void *escenario_void, pantalla_t *pantalla,
-			     struct pr_contexto *contexto)
+/**
+ * Muestra en pantalla tanto el pokémon a ser seleccionado
+ * como los obstáculos del jugador.
+ */
+void dibujar_seleccion_jugador(pantalla_t *pantalla, escenario_t *escenario,
+			       struct pr_contexto *contexto)
 {
-	escenario_t *escenario = escenario_void;
-
-	// Fondo
-	float opacidad_fondo =
-		(linear(contexto->frames_escena, 0, D_TRANSICION_FONDO,
-			OPACIDAD_FONDO, 100) -
-		 linear(contexto->frames_escena, D_TRANSICION_FONDO,
-			2 * D_TRANSICION_FONDO, 0, (100 - OPACIDAD_FONDO))) /
-		100.0f;
-	pantalla_color_fondo(pantalla, B_PRINCIPAL, opacidad_fondo);
-	pantalla_fondo(pantalla);
-
-	// Nombres
-	pantalla_estilo_texto(pantalla, E_NOMBRE);
-	pantalla_color_texto(pantalla, C_NOMBRE_1, 1.0f);
-	pantalla_texto(pantalla, escenario->x_nombre1, Y_NOMBRE_START,
-		       contexto->nombre_entrenador);
-
-	pantalla_color_texto(pantalla, C_NOMBRE_2, 1.0f);
-	pantalla_texto(pantalla, escenario->x_nombre2, Y_NOMBRE_START,
-		       escenario->nombre2);
-
-	pantalla_estilo_texto(pantalla, E_NORMAL);
-	pantalla_color_texto(pantalla, C_NORMAL, 1.0f);
-	pantalla_texto(pantalla, X_VERSUS, Y_NOMBRE_START, M_VERSUS);
-
-	// Pokemon
+	// Pokémon
 	const struct pokemon_info *pokemon =
 		contexto->pokemones[escenario->seleccion1.pokemon_idx];
 	if (escenario->modificando == -1) {
@@ -412,7 +409,7 @@ void pr_preparacion_graficos(void *escenario_void, pantalla_t *pantalla,
 			       "%c  %c", S_LEFT, S_RIGHT);
 	}
 
-	// Obstaculos del jugador
+	// Obstáculos
 	for (int i = 0; i < OBSTACULOS_IMPOSIBLE; i++) {
 		bool activado = escenario->seleccion1.obstaculos_activados[i];
 		float opacidad = escenario->modificando == i ? 1.0f : 0.3f;
@@ -431,20 +428,90 @@ void pr_preparacion_graficos(void *escenario_void, pantalla_t *pantalla,
 				pantalla_color_texto(pantalla, c.r, c.g, c.b,
 						     opacidad);
 			}
-			pantalla_texto(pantalla, escenario->x_nombre1 + 2 * j,
-				       Y_SELECCION + 2 + 2 * i, "%c",
-				       escenario->atributos[j].letra);
+			pantalla_texto(pantalla,
+				       escenario->x_nombre1 +
+					       Y_SEPARACION_OBSTACULOS * j,
+				       Y_SELECCION + Y_SEPARACION_OBSTACULOS +
+					       Y_SEPARACION_OBSTACULOS * i,
+				       "%c", escenario->atributos[j].letra);
 		}
 
 		if (escenario->modificando == i) {
 			pantalla_color_fondo(pantalla, C_TRANSPARENTE);
 			pantalla_color_texto(pantalla, B_SELECCION, 1.0f);
 			pantalla_texto(pantalla, escenario->x_nombre1 - 2,
-				       Y_SELECCION + 2 + 2 * i, "%c", '<');
+				       Y_SELECCION + Y_SEPARACION_OBSTACULOS +
+					       Y_SEPARACION_OBSTACULOS * i,
+				       "%c", '<');
 			pantalla_texto(pantalla, escenario->x_nombre1 + 6,
-				       Y_SELECCION + 2 + 2 * i, "%c", '>');
+				       Y_SELECCION + Y_SEPARACION_OBSTACULOS +
+					       Y_SEPARACION_OBSTACULOS * i,
+				       "%c", '>');
 		}
 	}
+}
+
+/**
+ * Muestra en pantalla tanto el pokémon a ser seleccionado (censurado)
+ * como los obstáculos (algunos ocultos) del CPU.
+ */
+void dibujar_seleccion_cpu(pantalla_t *pantalla, escenario_t *escenario,
+			   struct pr_contexto *contexto)
+{
+	pantalla_texto(
+		pantalla, escenario->x_nombre2, Y_SELECCION,
+		contexto->pokemones[escenario->seleccion2.pokemon_idx]->nombre);
+
+	for (int i = 0; i < escenario->seleccion2.cantidad_obstaculos; i++) {
+		if (escenario->seleccion2.obstaculos_ocultos[i]) {
+			pantalla_color_texto(pantalla, C_NORMAL, 1.0f);
+			pantalla_texto(pantalla, escenario->x_nombre2 + 2,
+				       Y_SELECCION + Y_SEPARACION_OBSTACULOS +
+					       Y_SEPARACION_OBSTACULOS * i,
+				       "?");
+		} else {
+			size_t atributo =
+				(size_t)escenario->seleccion2.obstaculos[i];
+			color_t color = escenario->atributos[atributo].color;
+			pantalla_color_texto(pantalla, color.r, color.g,
+					     color.b, 1.0f);
+			pantalla_texto(pantalla, escenario->x_nombre2 + 2,
+				       Y_SELECCION + Y_SEPARACION_OBSTACULOS +
+					       Y_SEPARACION_OBSTACULOS * i,
+				       "%c",
+				       escenario->atributos[atributo].letra);
+		}
+	}
+}
+
+void pr_preparacion_graficos(void *escenario_void, pantalla_t *pantalla,
+			     struct pr_contexto *contexto)
+{
+	escenario_t *escenario = escenario_void;
+
+	// Fondo
+	float opacidad_fondo = pulso(contexto->frames_escena, 0,
+				     D_TRANSICION_FONDO, OPACIDAD_FONDO, 100) /
+			       100.0f;
+	pantalla_color_fondo(pantalla, B_PRINCIPAL, opacidad_fondo);
+	pantalla_fondo(pantalla);
+
+	// Nombres
+	pantalla_estilo_texto(pantalla, E_NOMBRE);
+	pantalla_color_texto(pantalla, C_NOMBRE_1, 1.0f);
+	pantalla_texto(pantalla, escenario->x_nombre1, Y_NOMBRE_START,
+		       contexto->nombre_entrenador);
+
+	pantalla_color_texto(pantalla, C_NOMBRE_2, 1.0f);
+	pantalla_texto(pantalla, escenario->x_nombre2, Y_NOMBRE_START,
+		       escenario->nombre2);
+
+	pantalla_estilo_texto(pantalla, E_NORMAL);
+	pantalla_color_texto(pantalla, C_NORMAL, 1.0f);
+	pantalla_texto(pantalla, X_VERSUS, Y_NOMBRE_START, M_VERSUS);
+
+	// Selección jugador.
+	dibujar_seleccion_jugador(pantalla, escenario, contexto);
 
 	// Aclaración
 	pantalla_estilo_texto(pantalla, E_NORMAL);
@@ -455,26 +522,7 @@ void pr_preparacion_graficos(void *escenario_void, pantalla_t *pantalla,
 		"Recorda que el objetivo es que los pokemones terminen al mismo tiempo");
 
 	// Selección oponente
-	pantalla_texto(
-		pantalla, escenario->x_nombre2, Y_SELECCION,
-		contexto->pokemones[escenario->seleccion2.pokemon_idx]->nombre);
-
-	for (int i = 0; i < escenario->seleccion2.cantidad_obstaculos; i++) {
-		if (escenario->seleccion2.obstaculos_ocultos[i]) {
-			pantalla_color_texto(pantalla, C_NORMAL, 1.0f);
-			pantalla_texto(pantalla, escenario->x_nombre2 + 2,
-				       Y_SELECCION + 2 + 2 * i, "?");
-		} else {
-			size_t atributo =
-				(size_t)escenario->seleccion2.obstaculos[i];
-			color_t color = escenario->atributos[atributo].color;
-			pantalla_color_texto(pantalla, color.r, color.g,
-					     color.b, 1.0f);
-			pantalla_texto(pantalla, escenario->x_nombre2 + 2,
-				       Y_SELECCION + 2 + 2 * i, "%c",
-				       escenario->atributos[atributo].letra);
-		}
-	}
+	dibujar_seleccion_cpu(pantalla, escenario, contexto);
 
 	// Controles
 	pantalla_color_texto(pantalla, C_CONTROL, 1.0f);

@@ -1,9 +1,3 @@
 # TODO
 
-- Función común para la opacidad inicial en cada escena.
-- Eliminar valores y números mágicos en escenas.
-- Crear subfunciones para funciones largas en escenas.
-
-# Escenas completamente listas
-
-
+- Parámetro de velocidad.

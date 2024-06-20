@@ -16,6 +16,15 @@ float linear(uint64_t tiempo, uint64_t tiempo_comienzo, uint64_t tiempo_fin,
 	return a + (b - a) * t;
 }
 
+float pulso(uint64_t tiempo, uint64_t tiempo_comienzo, uint64_t tiempo_fin,
+	    int inicio, int pico)
+{
+	uint64_t tiempo_pico = (tiempo_comienzo + tiempo_fin) / 2;
+
+	return (linear(tiempo, tiempo_comienzo, tiempo_pico, inicio, pico) -
+		linear(tiempo, tiempo_pico, tiempo_fin, 0, (pico - inicio)));
+}
+
 int ease_in_out(uint64_t tiempo, uint64_t tiempo_comienzo, uint64_t tiempo_fin,
 		int inicio, int fin)
 {
