@@ -10,9 +10,9 @@
 #include <stdlib.h>
 
 #define P_LOGO 7, 5
-#define D_ANIMACION 1500 / 30
-#define R_LOGO 1000 / 30
-#define D_PARPADEO 700 / 30
+#define D_ANIMACION 300
+#define R_LOGO 200
+#define D_PARPADEO 140
 #define B_INICIAL 0, 0, 0
 #define B_FINAL 255, 255, 255
 #define M_CONTROL "Presiona cualquier tecla para continuar"

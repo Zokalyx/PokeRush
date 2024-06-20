@@ -32,7 +32,7 @@
 #define ARCHIVO_LOGO_BACK "logo_back"
 #define P_LOGO 7, 4
 
-#define D_TRANSICION_COLOR_FONDO 1000 / 30
+#define D_TRANSICION_COLOR_FONDO 200
 
 typedef struct opcion {
 	const char *mensaje;

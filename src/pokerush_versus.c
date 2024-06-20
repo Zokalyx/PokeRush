@@ -11,11 +11,10 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-#define D_VERSUS 1000 / 30
-#define D_FAST1 1500 / 30
-#define D_SLOW 1500 / 30
-#define D_FAST2 1000 / 30
-#define D_RECT 1500 / 30
+#define D_FAST1 500
+#define D_SLOW 50
+#define D_FAST2 200
+#define D_RECT 200
 
 typedef struct escenario {
 	int x_nombre1, x_nombre2;

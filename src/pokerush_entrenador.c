@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#define D_CURSOR_TEXTO 500 / 30
+#define D_CURSOR_TEXTO 100
 #define M_TITULO "ENTRENADOR/A"
 #define M_INSTRUCCION "Escribi tu nombre:"
 #define Y_INSTRUCCION 10

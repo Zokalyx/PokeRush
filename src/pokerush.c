@@ -1,6 +1,7 @@
 #include "pokerush.h"
 #include "pokerush_macros.h"
 
+#include "pokerush_calibracion.h"
 #include "pokerush_splash_screen.h"
 #include "pokerush_entrenador.h"
 #include "pokerush_menu_principal.h"
@@ -185,6 +186,7 @@ void *pokerush_iniciar(void *configuracion_void, estado_t *estado)
 	escenas[POKERUSH_POKEDEX] = pr_pokedex();
 	escenas[POKERUSH_INFORMACION] = pr_informacion();
 	escenas[POKERUSH_REGLAS] = pr_reglas();
+	escenas[POKERUSH_CALIBRACION] = pr_calibracion();
 
 	estructura->contexto = (struct pr_contexto){
 		.primera_vez_en_menu = true,
@@ -201,8 +203,9 @@ void *pokerush_iniciar(void *configuracion_void, estado_t *estado)
 	memset(estructura->contexto.nombre_entrenador, '\0',
 	       LONGITUD_NOMBRE + 1);
 
-	estructura->escenario =
-		escenas[POKERUSH_SPLASH_SCREEN].iniciar(&estructura->contexto);
+	estructura->escena_actual = POKERUSH_CALIBRACION;
+	estructura->escenario = escenas[estructura->escena_actual].iniciar(
+		&estructura->contexto);
 	if (estructura->escenario == NULL) {
 		*estado = ERROR_CREACION_ESCENA;
 		free(estructura);
@@ -210,7 +213,6 @@ void *pokerush_iniciar(void *configuracion_void, estado_t *estado)
 		free(pokemones);
 		return NULL;
 	}
-	estructura->escena_actual = POKERUSH_SPLASH_SCREEN;
 
 	return estructura;
 }

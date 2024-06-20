@@ -31,8 +31,8 @@
 #define Y_PUNTAJE 13
 #define X_PUNTAJE 37
 
-#define D_TRANSICION 500 / 30
-#define D_PUNTAJE 2000 / 30
+#define D_TRANSICION 500
+#define D_PUNTAJE 2000
 
 #define PUNTAJE_MAXIMO 100
 

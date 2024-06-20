@@ -30,6 +30,7 @@ enum pr_nombre_escena {
 	// de que el juego debe cerrarse ASAP.
 	POKERUSH_CERRAR = -1,
 	// Escenas
+	POKERUSH_CALIBRACION,
 	POKERUSH_SPLASH_SCREEN,
 	POKERUSH_ENTRENADOR,
 	POKERUSH_MENU_PRINCIPAL,
