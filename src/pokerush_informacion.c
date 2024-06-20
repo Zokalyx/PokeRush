@@ -24,10 +24,6 @@
 #define M_LINEA_6 \
 	"Muchas gracias por jugar! (Nintendo no me hagas juicio porfis)"
 
-#define M_LINEA_7 \
-	"Esta version del juego fue nerfeada para poder ser entregada."
-#define M_LINEA_8 "Revisa la version completa en mi GitHub!"
-
 #define C_LINK 150, 200, 255
 #define M_LINK "https://github.com/Zokalyx"
 
@@ -80,9 +76,6 @@ void pr_informacion_graficos(void *escenario_void, pantalla_t *pantalla,
 	pantalla_texto(pantalla, X_MARGEN, Y_LINEA_1 + 4, M_LINEA_4);
 
 	pantalla_texto(pantalla, X_MARGEN, Y_LINEA_1 + 6, M_LINEA_6);
-
-	pantalla_texto(pantalla, X_MARGEN, Y_LINEA_1 + 8, M_LINEA_7);
-	pantalla_texto(pantalla, X_MARGEN, Y_LINEA_1 + 9, M_LINEA_8);
 
 	pantalla_color_texto(pantalla, C_LINK, 1.0f);
 	pantalla_texto(pantalla, X_MARGEN, Y_LINEA_1 + 12, M_LINK);
