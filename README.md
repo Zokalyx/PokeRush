@@ -4,6 +4,8 @@
 
 # TP Juego: PokéRush
 
+![Logo pokérush](img/logo.png)
+
 ## Repositorio de Francisco Russo - 107480 - [frrusso@fi.uba.ar](mailto:frrusso@fi.uba.ar)
 
 - Para compilar y ejecutar con Valgrind las pruebas de `tp.c`:
@@ -80,6 +82,8 @@ decir, `pokemones` sería principalmente de lectura.
 
 Nota: El plural de pokémon es pokémon. Pero en el código se utiliza "pokemones" para mejorar la claridad.
 
+![Estructura TP]()
+
 ### Selección de obstáculos
 
 Un jugador puede insertar obstáculos en su propia pista, y hay 3 variantes para elegir (fuerza, destreza e
@@ -95,6 +99,8 @@ Finalmente, está la posibilidad de crear un string que represente la pista. Por
 un string `FFDIF` que representa 5 obstáculos (fuerza, fuerza, destreza, inteligencia, fuerza). La lógica para
 crear este string es muy sencilla. 5 obstáculos significaría 6 chars (uno extra para el `\0`). Hacemos un
 switch para convertir cada tipo de obstáculo a un char ya definido en el header file.
+
+![Lista obstáculos]()
 
 ### Selección de pokémon
 
@@ -136,6 +142,8 @@ Una vez hecho todo ese lío podemos combinar todos los nombres en uno. Primero `
 de bytes exacta que necesitemos, incluyendo espacio para las comas y para el `\0`. Copy paste de a uno
 y estamos.
 
+![Lista pokémon]()
+
 ### Carreras
 
 Una vez seleccionado uno o más obstáculos, y teniendo un pokémon seleccionado también, el usuario del TP
@@ -159,6 +167,8 @@ Lo único fijo durante el recorrido es el pokémon. Lo necesitamos saber porque 
 
 Si necesitamos el tiempo total, ya está calculado. Si necesitamos el string, debemos hacer un proceso muy similar al de los nombres disponibles. Todo este proceso es O(N), donde N es la cantidad de obstáculos.
 
+![Ejemplo carrera]()
+
 ### Puntaje
 
 A diferencia de lo que uno creería, la "carrera" no es una carrera de verdad. El primero no gana. Sino que la idea es que los pokémon lleguen al mismo tiempo. La fórmula para el puntaje es la siguiente:
@@ -166,6 +176,10 @@ A diferencia de lo que uno creería, la "carrera" no es una carrera de verdad. E
 $$
 P = 100 - 100 * \frac{|T_1 - T_2|}{T_1 + T_2}
 $$
+
+La división utilizada es la de C (se truncan los decimales). Primero se multiplica el numerador por 100 y luego se divide.
+
+Esta fórmula penaliza la diferencia de tiempo restando puntos, pero lo hace menos a medida que los tiempos son más grandes. De esta manera, se penaliza menos a una diferencia entre 100 y 95 "segundos" que entre 10 y 5. Para tiempos de 100 y 95 el puntaje es 98, mientras que para 10 y 5 el puntaje cae a 67.
 
 ---
 
@@ -176,6 +190,8 @@ El TDA TP es solo una de las piezas necesarias para realizar un juego. El mismo 
 PokéRush es un juego que se corre en la terminal y permite al jugador visualizar pokémon, elegir una dificultad, crear su pista de obstáculos y ver a los pokémon recorrer los obstáculos. Todo esto de una manera gráfica e interactiva mediante controles de teclado.
 
 Nota: Todo lo que sea de PokéRush tiene el prefijo `pokerush_` o simplemente `pr_` (funciones, structs, etc.).
+
+![Screenshot juego]()
 
 ### Estructura principal
 
@@ -191,6 +207,8 @@ struct pokerush {
 ```
 
 Escenario, escena actual... sí, este juego (como muchisisísimos otros) tienen distintas "escenas" o "pantallas". Todas las escenas están disponibles en el arreglo `escenas` mientras que sabemos en cuál estamos con la `escena_actual`. Siguiendo la analogía del teatro, cada escena tiene un conjunto de _props_ y personajes a los que colectivamente los llamo `escenario`. Caso común en PokéRush: un sprite (es decir, una imagen a ser mostrada en pantalla). En rigor, este escenario es manejado 100% por la lógica de la escena misma, y puede tener cualquier cosa.
+
+![Escenario]()
 
 Por otro lado está el `contexto`, lo cual puede sonar parecido al escenario. Pero el contexto podría bien llamarse "contexto global" o "datos del juego". Es decir, son persistentes a lo largo de todas las escenas y su estructura es fija:
 
@@ -243,6 +261,8 @@ PokéRush contiene 11 escenas:
 
 Además, está [`pokerush.c`](src/pokerush.c) que maneja el cambio de escenas y ese tipo de cosas.
 
+![Flujo de escenas]()
+
 ---
 
 ## Motor de juego
@@ -258,6 +278,8 @@ A medida que se desarrolló el juego, se notó que debía haber una separación 
 ### Main loop
 
 Todo juego tiene un loop que generalmente se compone de: procesar eventos, dibujar frame en pantalla, repetir. Este motor hace lo mismo. El motor delega casi toda la tarea al juego cargado (PokéRush). Lo único que hace es esperar a leer la tecla "debug" ('\t') para mostrar información de debug en pantalla. En este caso, esto es solamente el número de frame actual. A medida que el motor crezca en complejidad, se pueden agregar más valores.
+
+![Main loop]()
 
 ### Funcionalidades
 
@@ -276,6 +298,8 @@ Acá, `\x` significa que estamos escribiendo un byte de manera manual ya que no 
 Hay otro tema con la pantalla. Normalmente, `stdout` usa **Line Buffering**. Esto significa que antes de mostrarse en pantalla, hay un búfer interno que guarda los caracteres hasta que llega un newline (`\n`). Nosotros tenemos que dibujar varias líneas de caracteres varias veces por segundo. No es muy conveniente que estemos escribiendo taaan seguido a `stdout`. La solución es usar `stdout` en modo **Fully Buffered**. En este modo, recién se vuelcan todos los bytes a `stdout` (a la terminal) cuando hacemos `flush`, o cuando se llena el búfer.
 
 Aún con esa consideración, no es conveniente llamar `printf` todo el tiempo ya que es una función lenta (usa syscalls). Así que la pantalla contiene su propio búfer de caracteres los cuales printea todos cuando se pide actualizar el frame. Ese búfer es lo que se modifica cuando el usuario del TDA llama una función como `pantalla_sprite(...)`.
+
+![Flujo pantalla]()
 
 #### Color: 24-bit RGB
 
@@ -305,6 +329,8 @@ typedef struct sprite {
 
 Todos los sprites deben estar en una carpeta dentro de la cual tiene que existir `lista.txt` donde se listen todos los BMP a ser cargados en el juego.
 
+![Formato BMP]()
+
 #### Input: Stdin y la Terminal
 
 `stdin` también es **Line Buffered** normalmente. Esto no nos sirve si queremos reaccionar instantáneamente a la entrada de teclado del usuario. Queremos lo opuesto al fully buffered, queremos **No Buffering**.
@@ -320,6 +346,8 @@ La animación más simple es el _LERP_ (Linear intERPolation). Es simplemente ir
 Además de la interpolación lineal se programó una función de transición con movimiento suave y satisfactorio. La misma se la llamó `ease_in_out` y es básicamente una función cuadrática a trozos.
 
 Hay un par de funciones más, no tan interesantes.
+
+![Funciones de transición]()
 
 #### Estado: Enums
 
@@ -363,5 +391,7 @@ Se pueden agregar "scrolling" en las listas dentro del juego. Tanto las del pok�
 El "estado" podría contener más información. Por ejemplo, si falló la lectura de un BMP, guardar en algún lado qué archivo fue el culpable.
 
 Otra mejora posible es la compatibilidad con Windows.
+
+La pantalla usa un búfer donde cada byte corresponde a un caracter mostrado en pantalla. Esto nos limita a texto ASCII en pantalla, lo cual es muy restrictivo. Idealmente se soportaría caracteres de múltiples bytes (como en UTF-8), pero esto agregaría bastante complejidad al programa.
 
 Aunque esto no altera el producto final, para un desarrollo más cómodo se podría crear una jerarquía de directorios dentro de `/src`. Esto se evitó para no modificar el `makefile` dado por la cátedra.
