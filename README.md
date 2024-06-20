@@ -82,7 +82,7 @@ decir, `pokemones` sería principalmente de lectura.
 
 Nota: El plural de pokémon es pokémon. Pero en el código se utiliza "pokemones" para mejorar la claridad.
 
-![Estructura TP]()
+![Estructura TP](img/estructuratp.jpg)
 
 ### Selección de obstáculos
 
@@ -99,8 +99,6 @@ Finalmente, está la posibilidad de crear un string que represente la pista. Por
 un string `FFDIF` que representa 5 obstáculos (fuerza, fuerza, destreza, inteligencia, fuerza). La lógica para
 crear este string es muy sencilla. 5 obstáculos significaría 6 chars (uno extra para el `\0`). Hacemos un
 switch para convertir cada tipo de obstáculo a un char ya definido en el header file.
-
-![Lista obstáculos]()
 
 ### Selección de pokémon
 
@@ -142,8 +140,6 @@ Una vez hecho todo ese lío podemos combinar todos los nombres en uno. Primero `
 de bytes exacta que necesitemos, incluyendo espacio para las comas y para el `\0`. Copy paste de a uno
 y estamos.
 
-![Lista pokémon]()
-
 ### Carreras
 
 Una vez seleccionado uno o más obstáculos, y teniendo un pokémon seleccionado también, el usuario del TP
@@ -167,7 +163,7 @@ Lo único fijo durante el recorrido es el pokémon. Lo necesitamos saber porque 
 
 Si necesitamos el tiempo total, ya está calculado. Si necesitamos el string, debemos hacer un proceso muy similar al de los nombres disponibles. Todo este proceso es O(N), donde N es la cantidad de obstáculos.
 
-![Ejemplo carrera]()
+![Ejemplo carrera](img/carrera.jpg)
 
 ### Puntaje
 
@@ -191,7 +187,7 @@ PokéRush es un juego que se corre en la terminal y permite al jugador visualiza
 
 Nota: Todo lo que sea de PokéRush tiene el prefijo `pokerush_` o simplemente `pr_` (funciones, structs, etc.).
 
-![Screenshot juego]()
+![Screenshot](img/screenshot.png)
 
 ### Estructura principal
 
@@ -208,7 +204,7 @@ struct pokerush {
 
 Escenario, escena actual... sí, este juego (como muchisisísimos otros) tienen distintas "escenas" o "pantallas". Todas las escenas están disponibles en el arreglo `escenas` mientras que sabemos en cuál estamos con la `escena_actual`. Siguiendo la analogía del teatro, cada escena tiene un conjunto de _props_ y personajes a los que colectivamente los llamo `escenario`. Caso común en PokéRush: un sprite (es decir, una imagen a ser mostrada en pantalla). En rigor, este escenario es manejado 100% por la lógica de la escena misma, y puede tener cualquier cosa.
 
-![Escenario]()
+![Escenario](img/escenario.jpg)
 
 Por otro lado está el `contexto`, lo cual puede sonar parecido al escenario. Pero el contexto podría bien llamarse "contexto global" o "datos del juego". Es decir, son persistentes a lo largo de todas las escenas y su estructura es fija:
 
@@ -241,7 +237,7 @@ Demasiadas cosas! Veamos las más importantes:
 Cada escena es un conjunto de 4 funciones. Siendo más concretos, es un struct con 4 campos de punteros a función.
 
 - **Constructor**: Configura el escenario y genera valores iniciales para el funcionamiento de la escena.
-- **Proceso de eventos**: Un evento es una de dos cosas. El **tiempo** mismo puede causar algún efecto en la lógica (por ejemplo, una escena cambia a otra pasados 1000 frames) o sino el input del jugador.
+- **Proceso de eventos**: Un evento es una de dos cosas. El **tiempo** mismo puede causar algún efecto en la lógica (por ejemplo, una escena cambia a otra pasados 1000 frames) o sino el input del jugador. Esta función debe retornar el índice de escena a cual se debe cambiar (o permanecer en la actual).
 - **Gráficos**: De manera contraria al proceso de eventos (que actúa en base a entradas), los gráficos no modifican nada y solo muestran el estado actual del escenario y del contexto del juego (es decir, es el output). Cómo se dibujan los gráficos? Eso ya sería parte del motor (más adelante).
 - **Destructor**: Destruye el escenario.
 
@@ -261,7 +257,7 @@ PokéRush contiene 11 escenas:
 
 Además, está [`pokerush.c`](src/pokerush.c) que maneja el cambio de escenas y ese tipo de cosas.
 
-![Flujo de escenas]()
+![Flujo de escenas](img/escenas.jpg)
 
 ---
 
@@ -270,16 +266,14 @@ Además, está [`pokerush.c`](src/pokerush.c) que maneja el cambio de escenas y 
 A medida que se desarrolló el juego, se notó que debía haber una separación entre la lógica del juego pedido por el enunciado, y de las herrramientas necesarias para posibilitar el funcionamiento del juego. Y ya que estamos, podemos hacer al motor más independiente y permitirle correr cualquier otro juego que adopte el formato requerido. PokéRush, desde el punto de vista del motor, es un struct con 5 funciones:
 
 - **Constructor**: Inicia el juego y todos sus valores internos. Por ejemplo, sus escenas, el `TP`, carga los sprites, etc.
-- **Proceso de eventos**: En el caso de PokéRush, se delega todo proceso de eventos a la escena misma, aunque podría perfectamente haber una lógica global que actúa sobre eventos.
+- **Proceso de eventos**: En el caso de PokéRush, se delega todo proceso de eventos a la escena misma, aunque podría perfectamente haber una lógica global que actúa sobre eventos. Esta función debe retornar un `bool` dependiendo de si el juego finalizó o no.
 - **Gráficos**: Nuevamente, PokéRush delega todo dibujo de gráficos a la escena actual.
 - **Destructor**: Libera toda la memoria utilizada por el juego.
 - **Configuración**: Devuelve la configuración requerida por el motor. La misma se compone de dos valores: ancho de pantalla y alto de pantalla (en caracteres de la terminal). Otros valores que podrían llegar a exisitir son los cuadros por segundo, algún archivo de logs, etc.
 
 ### Main loop
 
-Todo juego tiene un loop que generalmente se compone de: procesar eventos, dibujar frame en pantalla, repetir. Este motor hace lo mismo. El motor delega casi toda la tarea al juego cargado (PokéRush). Lo único que hace es esperar a leer la tecla "debug" ('\t') para mostrar información de debug en pantalla. En este caso, esto es solamente el número de frame actual. A medida que el motor crezca en complejidad, se pueden agregar más valores.
-
-![Main loop]()
+Todo juego tiene un loop que generalmente se compone de: procesar eventos, dibujar frame en pantalla, repetir. Este motor hace lo mismo. El motor delega casi toda la tarea al juego cargado (PokéRush). Lo único que hace es esperar a leer la tecla "debug" (`'\t'`) para mostrar información de debug en pantalla. En este caso, esto es solamente el número de frame actual. A medida que el motor crezca en complejidad, se pueden agregar más valores.
 
 ### Funcionalidades
 
@@ -299,7 +293,7 @@ Hay otro tema con la pantalla. Normalmente, `stdout` usa **Line Buffering**. Est
 
 Aún con esa consideración, no es conveniente llamar `printf` todo el tiempo ya que es una función lenta (usa syscalls). Así que la pantalla contiene su propio búfer de caracteres los cuales printea todos cuando se pide actualizar el frame. Ese búfer es lo que se modifica cuando el usuario del TDA llama una función como `pantalla_sprite(...)`.
 
-![Flujo pantalla]()
+![Flujo pantalla](img/pantalla.jpg)
 
 #### Color: 24-bit RGB
 
@@ -329,7 +323,7 @@ typedef struct sprite {
 
 Todos los sprites deben estar en una carpeta dentro de la cual tiene que existir `lista.txt` donde se listen todos los BMP a ser cargados en el juego.
 
-![Formato BMP]()
+![Formato BMP](img/bitmap.jpg)
 
 #### Input: Stdin y la Terminal
 
@@ -347,7 +341,7 @@ Además de la interpolación lineal se programó una función de transición con
 
 Hay un par de funciones más, no tan interesantes.
 
-![Funciones de transición]()
+![Funciones de transición](img/animacion.jpg)
 
 #### Estado: Enums
 
