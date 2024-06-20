@@ -1,3 +1,0 @@
-# TODO
-
-- Parámetro de velocidad.
