@@ -281,7 +281,7 @@ Todo juego tiene un loop que generalmente se compone de: procesar eventos, dibuj
 
 El main loop es el cerebro y corazón del motor. Pero también están los ojos, la nariz, las manos. Eso es una analogía (un poco volada) para representar las funcionalidades de color, sprites, estado, input, animación y la más importante de todas: **la pantalla**.
 
-#### Pantalla: ANSI Escape Sequences
+#### Pantalla ft. ANSI Escape Sequences
 
 La pantalla se desarrolló como un TDA que abstrae la escritura de caracteres en la terminal. La cual, por cierto, es súper poderosa! Nuestro objetivo es poder escribir caracteres con color de fondo y de trazo en cualquier coordenada de la terminal. Nuestra arma secreta: los [**ANSI Escape Sequences**](https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797)!. La idea es esta. Las terminales tienen funciones extra (que en realidad dependen de cada terminal si las implementan o no) que se activan con secuencias de bytes particulares. Veamos por ejemplo la secuencia para setear el color de fondo de los siguientes caracteres a ser escritos.
 
@@ -297,7 +297,7 @@ Aún con esa consideración, no es conveniente llamar `printf` todo el tiempo ya
 
 ![Flujo pantalla](img/pantalla.jpg)
 
-#### Color: 24-bit RGB
+#### Color ft. 24-bit RGB
 
 Una de las maneras más convenientes de representar un color es con 3 bytes, uno para el red, otro para el green y otro para el blue. Súper efectivo!
 
@@ -309,7 +309,7 @@ typedef struct color {
 } color_t;
 ```
 
-#### Sprite: Formato BMP
+#### Sprite ft. Formato BMP
 
 Los sprites song como mini imágenes que podemos reutilizar y dibujar en la pantalla. Las mismas tienen que estar guardadas en algún archivo en algún lado. Lo más conveniente es utilizar el formato [Bitmap (BMP)](https://en.wikipedia.org/wiki/BMP_file_format). Este formato permite guardar los pixeles en formato RGB de 24-bit, sin compresión y todo muy facilito de leer.
 
@@ -327,7 +327,7 @@ Todos los sprites deben estar en una carpeta dentro de la cual tiene que existir
 
 ![Formato BMP](img/bitmap.jpg)
 
-#### Input: Stdin y la Terminal
+#### Input ft. Stdin y la Terminal
 
 `stdin` también es **Line Buffered** normalmente. Esto no nos sirve si queremos reaccionar instantáneamente a la entrada de teclado del usuario. Queremos lo opuesto al fully buffered, queremos **No Buffering**.
 
@@ -335,7 +335,7 @@ La manera de cambiar este comportamiento difiere entre sistemas operativos. Este
 
 Hay un problema más. El motor necesita saber el input del usuario todos los frames. Y si no hubo acción del usuario? No podemos permitirnos bloquear el programa con `getchar`, el show debe continuar! Así que siempre antes de llamar a `getchar` se hace un _polling_ de `stdin` para ver si hay caracteres esperando a ser consumidos.
 
-#### Animación: Funciones de transición
+#### Animación ft. Funciones de transición
 
 La animación más simple es el _LERP_ (Linear intERPolation). Es simplemente ir linealmente desde A hasta B con velocidad constante. A y B pueden ser cualquier cosa, como una opacidad, una coordenada, un componente de un color, etc.
 
@@ -345,7 +345,7 @@ Hay un par de funciones más, no tan interesantes.
 
 ![Funciones de transición](img/animacion.jpg)
 
-#### Estado: Enums
+#### Estado ft. Enums
 
 Para una mejor experiencia de usuario y desarrollo, se creó un gran `enum` que contiene todas las razones por las cual el programa puede finalizar. Además, se creó una función que muestra un mensaje amigable al usuario para cada error posible.
 
@@ -374,19 +374,15 @@ typedef enum estado {
 
 ## Limitaciones y Mejoras
 
-La limitación más grande probablemente sea que no hay referencia de tiempo! El juego no tiene ni idea si pasó 1 ms o 100 ms. Esto es un problema si queremos animaciones consistentes en otros hardwares. Por eso se debe calibrar al comienzo de la sesión. Además, podríamos implementar algún tipo de "v-sync" para limitar los frames por segundo y no estar poniendo el CPU al palo.
+La limitación más grande probablemente sea que no hay referencia de tiempo! El juego no tiene ni idea si pasó 1 ms o 100 ms en un frame. Esto es un problema si queremos animaciones consistentes en otros hardwares (para combatir esto se creó la pantalla de calibración). Además, podríamos implementar algún tipo de "v-sync" para limitar los frames por segundo y no estar poniendo el CPU al palo.
 
-Para recorrer el directorio, se podría recorrer directamente dentro del código sin requerir una lista en formato de texto.
-
-Los colores podrían tener transparencia parcial, para sprites aún más detallados. Sin embargo, habría que implementar soporte a formato `.png`, por ejemplo, o complejizar alguna otra área del código.
+Para recorrer el directorio de sprites, se podría recorrer directamente dentro del código sin requerir una lista en formato de texto. Los colores de los sprites podrían tener transparencia parcial, para ser aún más detallados. Sin embargo, habría que implementar soporte a formato `.png`, por ejemplo, o complejizar alguna otra área del código.
 
 Es posible obtener las dimensiones de la terminal y cerrar el juego si la terminal es muy pequeña comparada a la pantalla. También se puede centrar la pantalla en la terminal de esta misma manera.
 
 Se pueden agregar "scrolling" en las listas dentro del juego. Tanto las del pokédex como la de selección de obstáculos. Como está ahora, si se agregan más pokémon u obstáculos, no entran en pantalla.
 
 El "estado" podría contener más información. Por ejemplo, si falló la lectura de un BMP, guardar en algún lado qué archivo fue el culpable.
-
-Otra mejora posible es la compatibilidad con Windows.
 
 La pantalla usa un búfer donde cada byte corresponde a un caracter mostrado en pantalla. Esto nos limita a texto ASCII en pantalla, lo cual es muy restrictivo. Idealmente se soportaría caracteres de múltiples bytes (como en UTF-8), pero esto agregaría bastante complejidad al programa.
 
