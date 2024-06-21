@@ -1,4 +1,4 @@
-#include "motor_pantalla.h"
+#include "pantalla.h"
 
 #include <stdlib.h>
 #include <stdio.h>

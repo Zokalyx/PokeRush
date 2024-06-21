@@ -1,4 +1,4 @@
-#include "motor_animacion.h"
+#include "animacion.h"
 
 float linear(uint64_t tiempo, uint64_t tiempo_comienzo, uint64_t tiempo_fin,
 	     int inicio, int fin)

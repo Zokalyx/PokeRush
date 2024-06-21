@@ -1,14 +1,14 @@
-#include "pokerush_carrera.h"
-#include "pokerush_macros.h"
+#include "carrera.h"
+#include "macros.h"
 
-#include "motor_estado.h"
-#include "motor_pantalla.h"
-#include "motor_input.h"
-#include "motor_animacion.h"
+#include "../motor/estado.h"
+#include "../motor/pantalla.h"
+#include "../motor/input.h"
+#include "../motor/animacion.h"
 
-#include "hash.h"
-#include "tp.h"
-#include "split.h"
+#include "../hash.h"
+#include "../tp.h"
+#include "../split.h"
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>

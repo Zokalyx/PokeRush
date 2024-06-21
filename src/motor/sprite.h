@@ -1,8 +1,8 @@
 #ifndef __SPRITE_H__
 #define __SPRITE_H__
 
-#include "motor_color.h"
-#include "motor_estado.h"
+#include "color.h"
+#include "estado.h"
 #include <stdio.h>
 
 /**

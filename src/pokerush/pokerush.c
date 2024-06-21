@@ -1,27 +1,27 @@
 #include "pokerush.h"
-#include "pokerush_macros.h"
+#include "macros.h"
 
-#include "pokerush_calibracion.h"
-#include "pokerush_splash_screen.h"
-#include "pokerush_entrenador.h"
-#include "pokerush_menu_principal.h"
-#include "pokerush_informacion.h"
-#include "pokerush_pokedex.h"
-#include "pokerush_menu_juego.h"
-#include "pokerush_preparacion.h"
-#include "pokerush_versus.h"
-#include "pokerush_reglas.h"
-#include "pokerush_carrera.h"
-#include "pokerush_ganador.h"
+#include "calibracion.h"
+#include "splash_screen.h"
+#include "entrenador.h"
+#include "menu_principal.h"
+#include "informacion.h"
+#include "pokedex.h"
+#include "menu_juego.h"
+#include "preparacion.h"
+#include "versus.h"
+#include "reglas.h"
+#include "carrera.h"
+#include "ganador.h"
 
-#include "motor_estado.h"
+#include "../motor/estado.h"
 
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
-#include "split.h"
+#include "../split.h"
 
 #define LONGITUD_NOMBRE_ARCHIVO 1023
 #define LONGITUD_NOMBRE_SPRITE 511

@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "src/motor.h"
-#include "src/motor_estado.h"
-#include "src/pokerush.h"
+#include "src/motor/motor.h"
+#include "src/motor/estado.h"
+#include "src/pokerush/pokerush.h"
 
 #define CSV_POKEMONES "./pokemones_juego.csv"
 #define DIR_SPRITES "./sprites"

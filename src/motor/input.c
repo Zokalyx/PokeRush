@@ -1,4 +1,4 @@
-#include "motor_input.h"
+#include "input.h"
 
 // Necesito funciones de estos archivos
 // sí o sí. No estaba restringido en el

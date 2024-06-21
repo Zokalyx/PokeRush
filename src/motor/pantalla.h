@@ -2,9 +2,9 @@
 #define __PANTALLA_H__
 
 #include <stdbool.h>
-#include "motor_color.h"
-#include "motor_estado.h"
-#include "motor_sprite.h"
+#include "color.h"
+#include "estado.h"
+#include "sprite.h"
 
 /**
  * TDA que abstrae la terminal como una grilla

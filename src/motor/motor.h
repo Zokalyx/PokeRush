@@ -4,8 +4,8 @@
 #include <stdint.h>
 #include <stdarg.h>
 #include <stdbool.h>
-#include "motor_estado.h"
-#include "motor_pantalla.h"
+#include "estado.h"
+#include "pantalla.h"
 
 /**
  * Estructura de configuración para el motor.

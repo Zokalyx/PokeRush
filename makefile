@@ -14,7 +14,7 @@ valgrind-juego: juego
 	valgrind $(VALGRIND_FLAGS) ./juego
 
 juego: src/*.c juego.c
-	$(CC) $(CFLAGS) src/*.c juego.c -o juego
+	$(CC) $(CFLAGS) src/*.c src/motor/*.c src/pokerush/*.c juego.c -o juego
 
 clean:
 	rm -f pruebas_alumno pruebas_chanutron juego

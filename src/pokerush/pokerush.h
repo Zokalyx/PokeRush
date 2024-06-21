@@ -1,14 +1,14 @@
 #ifndef __POKERUSH_H__
 #define __POKERUSH_H__
 
-#include "motor.h"
-#include "motor_estado.h"
-#include "motor_pantalla.h"
+#include "../motor/motor.h"
+#include "../motor/estado.h"
+#include "../motor/pantalla.h"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include "tp.h"
-#include "hash.h"
+#include "../tp.h"
+#include "../hash.h"
 
 #define LONGITUD_NOMBRE 31
 

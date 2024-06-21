@@ -1,10 +1,10 @@
-#include "pokerush_splash_screen.h"
-#include "pokerush_macros.h"
+#include "splash_screen.h"
+#include "macros.h"
 
-#include "motor_estado.h"
-#include "motor_pantalla.h"
-#include "motor_color.h"
-#include "motor_animacion.h"
+#include "../motor/estado.h"
+#include "../motor/pantalla.h"
+#include "../motor/color.h"
+#include "../motor/animacion.h"
 
 #include <stdint.h>
 #include <stdlib.h>

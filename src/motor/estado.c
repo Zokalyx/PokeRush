@@ -1,4 +1,4 @@
-#include "motor_estado.h"
+#include "estado.h"
 #include <stdio.h>
 
 #define TEXTO_ROJO "\x1b[31m"

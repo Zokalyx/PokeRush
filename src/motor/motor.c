@@ -1,7 +1,7 @@
 #include "motor.h"
 
-#include "motor_input.h"
-#include "motor_pantalla.h"
+#include "input.h"
+#include "pantalla.h"
 
 #include <stdint.h>
 #include <stdlib.h>

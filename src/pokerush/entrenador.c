@@ -1,10 +1,10 @@
-#include "pokerush_entrenador.h"
-#include "pokerush_macros.h"
+#include "entrenador.h"
+#include "macros.h"
 
-#include "motor_estado.h"
-#include "motor_pantalla.h"
-#include "motor_input.h"
-#include "motor_animacion.h"
+#include "../motor/estado.h"
+#include "../motor/pantalla.h"
+#include "../motor/input.h"
+#include "../motor/animacion.h"
 
 #include <stdlib.h>
 #include <ctype.h>

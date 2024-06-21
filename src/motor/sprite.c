@@ -1,4 +1,4 @@
-#include "motor_sprite.h"
+#include "sprite.h"
 
 #include <stdint.h>
 #include <stdlib.h>

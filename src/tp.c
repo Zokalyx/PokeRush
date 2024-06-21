@@ -356,7 +356,7 @@ char *tp_nombres_disponibles(TP *tp)
 
 bool tp_seleccionar_pokemon(TP *tp, enum TP_JUGADOR jugador, const char *nombre)
 {
-	if (tp == NULL)
+	if (tp == NULL || nombre == NULL)
 		return false;
 
 	struct jugador *jugador_actual;
@@ -374,7 +374,11 @@ bool tp_seleccionar_pokemon(TP *tp, enum TP_JUGADOR jugador, const char *nombre)
 		return false;
 	}
 
-	struct pokemon_info *pokemon = hash_obtener(tp->pokemones, nombre);
+	char buffer_nombre[MAX_NOMBRE_POKEMON + 1];
+	strcpy_nombre_pokemon(buffer_nombre, nombre);
+
+	struct pokemon_info *pokemon =
+		hash_obtener(tp->pokemones, buffer_nombre);
 	if (pokemon == NULL)
 		return false;
 
@@ -515,6 +519,8 @@ char *tp_obstaculos_pista(TP *tp, enum TP_JUGADOR jugador)
 	}
 
 	size_t cantidad_obstaculos = lista_tamanio(obstaculos);
+	if (cantidad_obstaculos == 0)
+		return NULL;
 
 	char *string_obstaculos =
 		malloc((cantidad_obstaculos + 1) * sizeof(char));
