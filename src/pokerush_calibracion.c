@@ -83,8 +83,7 @@ void pr_calibracion_graficos(void *escenario_void, pantalla_t *pantalla,
 
 	// Borde
 	pantalla_color_texto(pantalla, C_TITULO, 1.0f);
-	pantalla_rectangulo(pantalla, 0, 1, ANCHO_PANTALLA, ALTO_PANTALLA - 1,
-			    '*');
+	pantalla_rectangulo(pantalla, 0, 0, ANCHO_PANTALLA, ALTO_PANTALLA, '*');
 
 	// Título
 	pantalla_color_texto(pantalla, C_TITULO, 1.0f);

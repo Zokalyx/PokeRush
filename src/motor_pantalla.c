@@ -323,7 +323,7 @@ void pantalla_actualizar_frame(pantalla_t *pantalla)
 	bool primer_caracter = true;
 
 	for (unsigned y = 0; y < pantalla->alto; y++) {
-		printf(ESC CSI "%d;%dH", y, 0);
+		printf(ESC CSI "%d;%dH", y + 1, 0);
 
 		for (unsigned x = 0; x < pantalla->ancho; x++) {
 			unsigned pos_buffer = y * pantalla->ancho + x;
