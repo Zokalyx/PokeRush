@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#define D_TICK (400)
+#define D_TICK (550)
 #define C_TEXTO 25, 25, 25
 #define B_SUMA_TIEMPO 200, 100, 50
 #define B_TIEMPO_NORMAL 255, 255, 255
