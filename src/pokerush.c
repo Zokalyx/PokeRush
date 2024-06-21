@@ -199,6 +199,7 @@ void *pokerush_iniciar(void *configuracion_void, estado_t *estado)
 		.dificultad = FACIL,
 		.es_reintento = false,
 		.intentos_restantes = 0,
+		.multiplicador_frames = 0,
 	};
 	memset(estructura->contexto.nombre_entrenador, '\0',
 	       LONGITUD_NOMBRE + 1);

@@ -214,6 +214,7 @@ struct pr_contexto {
     hash_t *sprites;
     char nombre_entrenador[LONGITUD_NOMBRE + 1];
     uint64_t frames_escena;
+    unsigned multiplicador_frames;
     enum pr_dificultad dificultad;
     bool primera_vez_en_menu;
     unsigned intentos_restantes;
@@ -228,7 +229,7 @@ Demasiadas cosas! Veamos las más importantes:
 - `tp`: Acá se encuentra el corazón del juego.
 - `sprites`: Colección de "texturas" para ser utilizadas en el juego.
 - `nombre_entrenador`: Nombre elegido por el jugador.
-- `frames_escena`: Cantidad de frames transcurridos en la escena actual. Esto sería el "tiempo" transcurrido, un valor requerido para animaciones y movimientos en pantalla.
+- `frames_escena`: Cantidad de frames transcurridos en la escena actual. Esto sería el "tiempo" transcurrido, un valor requerido para animaciones y movimientos en pantalla. Lo multiplicamos por un valor que ajusta el usuario en la calibración.
 - `es_reintento...`: La lógica del juego es distinta si estamos reintentando o jugando por primera vez.
 - `pokemones`: Aunque TP contiene todos los pokémon, una vez que un jugador elige uno se pierde la capacidad de tener la lista completa de nuevo. Así que la guardamos acá afuera.
 
@@ -241,8 +242,9 @@ Cada escena es un conjunto de 4 funciones. Siendo más concretos, es un struct c
 - **Gráficos**: De manera contraria al proceso de eventos (que actúa en base a entradas), los gráficos no modifican nada y solo muestran el estado actual del escenario y del contexto del juego (es decir, es el output). Cómo se dibujan los gráficos? Eso ya sería parte del motor (más adelante).
 - **Destructor**: Destruye el escenario.
 
-PokéRush contiene 11 escenas:
+PokéRush contiene 12 escenas:
 
+- [Calibración](src/pokerush_calibracion.c)
 - [Splash screen](src/pokerush_splash_screen.c)
 - [Selección de nombre](src/pokerush_entrenador.c)
 - [Menú principal](src/pokerush_menu_principal.c)
@@ -372,7 +374,7 @@ typedef enum estado {
 
 ## Limitaciones y Mejoras
 
-La limitación más grande probablemente sea que no hay referencia de tiempo! El juego no tiene ni idea si pasó 1 ms o 100 ms. Esto es un problema si queremos animaciones consistentes en otros hardwares. Además, podríamos implementar algún tipo de "v-sync" para limitar los frames por segundo y no estar poniendo el CPU al palo.
+La limitación más grande probablemente sea que no hay referencia de tiempo! El juego no tiene ni idea si pasó 1 ms o 100 ms. Esto es un problema si queremos animaciones consistentes en otros hardwares. Por eso se debe calibrar al comienzo de la sesión. Además, podríamos implementar algún tipo de "v-sync" para limitar los frames por segundo y no estar poniendo el CPU al palo.
 
 Para recorrer el directorio, se podría recorrer directamente dentro del código sin requerir una lista en formato de texto.
 

@@ -489,10 +489,11 @@ void pr_preparacion_graficos(void *escenario_void, pantalla_t *pantalla,
 {
 	escenario_t *escenario = escenario_void;
 
+	uint64_t t = contexto->frames_escena * contexto->multiplicador_frames;
+
 	// Fondo
-	float opacidad_fondo = pulso(contexto->frames_escena, 0,
-				     D_TRANSICION_FONDO, OPACIDAD_FONDO, 100) /
-			       100.0f;
+	float opacidad_fondo =
+		pulso(t, 0, D_TRANSICION_FONDO, OPACIDAD_FONDO, 100) / 100.0f;
 	pantalla_color_fondo(pantalla, B_PRINCIPAL, opacidad_fondo);
 	pantalla_fondo(pantalla);
 

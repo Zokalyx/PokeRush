@@ -68,6 +68,7 @@ struct pr_contexto {
 	hash_t *sprites;
 	char nombre_entrenador[LONGITUD_NOMBRE + 1];
 	uint64_t frames_escena;
+	unsigned multiplicador_frames;
 	enum pr_dificultad dificultad;
 	bool primera_vez_en_menu;
 	unsigned intentos_restantes;

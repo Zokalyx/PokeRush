@@ -135,7 +135,7 @@ void reestablecer_stdout()
 */
 void mover_cursor_a(pantalla_t *pantalla, int x, int y)
 {
-	printf(ESC CSI "%d;%dH", y, x);
+	printf(ESC CSI "%d;%dH", y + 1, x);
 }
 
 pantalla_t *pantalla_crear(unsigned ancho, unsigned alto, estado_t *estado)
@@ -281,10 +281,13 @@ void pantalla_rectangulo(pantalla_t *pantalla, int x, int y, unsigned ancho,
 
 	for (int j = 0; j < alto; j++)
 		for (int i = 0; i < ancho; i++) {
-			if (i != 0 && i + 1 != ancho && j != 0 && j + 1 != alto)
-				borde = ' ';
+			char caracter;
+			if (i == 0 || i + 1 == ancho || j == 0 || j + 1 == alto)
+				caracter = borde;
+			else
+				caracter = ' ';
 
-			pantalla_escribir(pantalla, x + i, y + j, borde);
+			pantalla_escribir(pantalla, x + i, y + j, caracter);
 		}
 }
 

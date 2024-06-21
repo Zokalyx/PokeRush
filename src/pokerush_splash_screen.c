@@ -10,9 +10,9 @@
 #include <stdlib.h>
 
 #define P_LOGO 7, 5
-#define D_ANIMACION 300
-#define R_LOGO 200
-#define D_PARPADEO 140
+#define D_ANIMACION 3000
+#define R_LOGO 2000
+#define D_PARPADEO 1400
 #define B_INICIAL 0, 0, 0
 #define B_FINAL 255, 255, 255
 #define M_CONTROL "Presiona cualquier tecla para continuar"
@@ -56,7 +56,7 @@ void pr_splash_screen_graficos(void *escenario_void, pantalla_t *pantalla,
 {
 	escenario_t *escenario = escenario_void;
 
-	uint64_t t = contexto->frames_escena;
+	uint64_t t = contexto->frames_escena * contexto->multiplicador_frames;
 
 	// Fondo
 	float progreso = linear(t, 0, D_ANIMACION, 0, 1);

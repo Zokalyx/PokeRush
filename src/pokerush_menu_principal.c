@@ -32,7 +32,7 @@
 #define ARCHIVO_LOGO_BACK "logo_back"
 #define P_LOGO 7, 4
 
-#define D_TRANSICION_COLOR_FONDO 200
+#define D_TRANSICION_COLOR_FONDO 2000
 
 typedef struct opcion {
 	const char *mensaje;
@@ -146,13 +146,13 @@ void pr_menu_principal_graficos(void *escenario_void, pantalla_t *pantalla,
 {
 	escenario_t *escenario = escenario_void;
 
+	uint64_t t = contexto->frames_escena * contexto->multiplicador_frames;
+
 	// Fondo
-	float opacidad_fondo = pulso(contexto->frames_escena, 0,
-				     D_TRANSICION_FONDO, OPACIDAD_FONDO, 100) /
-			       100.0f;
+	float opacidad_fondo =
+		pulso(t, 0, D_TRANSICION_FONDO, OPACIDAD_FONDO, 100) / 100.0f;
 	float progreso = contexto->primera_vez_en_menu ?
-				 linear(contexto->frames_escena, 0,
-					D_TRANSICION_COLOR_FONDO, 0, 1) :
+				 linear(t, 0, D_TRANSICION_COLOR_FONDO, 0, 1) :
 				 1.0f;
 	color_t color_fondo = color_mezcla(color_crear(B_PRINCIPAL),
 					   color_crear(B_INICIAL), progreso);

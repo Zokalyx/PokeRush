@@ -11,10 +11,10 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-#define D_FAST1 500
-#define D_SLOW 50
-#define D_FAST2 200
-#define D_RECT 200
+#define D_FAST1 2000
+#define D_SLOW 2000
+#define D_FAST2 2000
+#define D_RECT 2000
 
 typedef struct escenario {
 	int x_nombre1, x_nombre2;
@@ -76,8 +76,10 @@ enum pr_nombre_escena pr_versus_eventos(void *escenario_void, int input,
 					struct pr_contexto *contexto,
 					estado_t *estado)
 {
+	uint64_t t = contexto->frames_escena * contexto->multiplicador_frames;
+
 	// La escena termina sola, no se puede saltear.
-	if (contexto->frames_escena > D_FAST1 + D_FAST2 + D_SLOW + D_RECT)
+	if (t > D_FAST1 + D_FAST2 + D_SLOW + D_RECT)
 		return POKERUSH_CARRERA;
 
 	return POKERUSH_VERSUS;
@@ -88,12 +90,11 @@ void pr_versus_graficos(void *escenario_void, pantalla_t *pantalla,
 {
 	escenario_t *escenario = escenario_void;
 
-	uint64_t t = contexto->frames_escena;
+	uint64_t t = contexto->frames_escena * contexto->multiplicador_frames;
 
 	// Fondo
-	float opacidad_fondo = pulso(contexto->frames_escena, 0,
-				     D_TRANSICION_FONDO, OPACIDAD_FONDO, 100) /
-			       100.0f;
+	float opacidad_fondo =
+		pulso(t, 0, D_TRANSICION_FONDO, OPACIDAD_FONDO, 100) / 100.0f;
 	if (t > D_FAST1 + D_SLOW + (D_FAST2 + D_RECT) / 2)
 		pantalla_color_fondo(pantalla, B_CARRERA, opacidad_fondo);
 	else

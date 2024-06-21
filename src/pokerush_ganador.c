@@ -31,8 +31,8 @@
 #define Y_PUNTAJE 13
 #define X_PUNTAJE 37
 
-#define D_TRANSICION 500
-#define D_PUNTAJE 2000
+#define D_TRANSICION 800
+#define D_PUNTAJE 3000
 
 #define PUNTAJE_MAXIMO 100
 
@@ -113,10 +113,11 @@ void pr_ganador_graficos(void *escenario_void, pantalla_t *pantalla,
 {
 	escenario_t *escenario = escenario_void;
 
+	uint64_t t = contexto->frames_escena * contexto->multiplicador_frames;
+
 	// Fondo
-	float opacidad_fondo = pulso(contexto->frames_escena, 0,
-				     D_TRANSICION_FONDO, OPACIDAD_FONDO, 100) /
-			       100.0f;
+	float opacidad_fondo =
+		pulso(t, 0, D_TRANSICION_FONDO, OPACIDAD_FONDO, 100) / 100.0f;
 	pantalla_color_fondo(pantalla, B_PRINCIPAL, opacidad_fondo);
 	pantalla_fondo(pantalla);
 	pantalla_color_fondo(pantalla, C_TRANSPARENTE);
@@ -135,9 +136,9 @@ void pr_ganador_graficos(void *escenario_void, pantalla_t *pantalla,
 	pantalla_texto(pantalla, X_TIEMPO2 + X_OFFSET_TIEMPO,
 		       Y_TIEMPO + Y_OFFSET_TIEMPO, "%d", escenario->tiempo2);
 
-	unsigned puntaje_animado = (unsigned)ease_in_out(
-		contexto->frames_escena, D_TRANSICION, D_TRANSICION + D_PUNTAJE,
-		0, (int)escenario->puntaje);
+	unsigned puntaje_animado =
+		(unsigned)ease_in_out(t, D_TRANSICION, D_TRANSICION + D_PUNTAJE,
+				      0, (int)escenario->puntaje);
 	pantalla_estilo_texto(pantalla, E_TITULO);
 	pantalla_texto(pantalla, X_PUNTAJE, Y_PUNTAJE, M_PUNTAJE,
 		       puntaje_animado);
@@ -172,8 +173,7 @@ void pr_ganador_graficos(void *escenario_void, pantalla_t *pantalla,
 
 	// Transición inicial
 	pantalla_color_fondo(pantalla, C_NORMAL, 1.0f);
-	int x = ease_in_out(contexto->frames_escena, 0, D_TRANSICION, 0,
-			    ANCHO_PANTALLA / 2);
+	int x = ease_in_out(t, 0, D_TRANSICION, 0, ANCHO_PANTALLA / 2);
 	pantalla_rectangulo(pantalla, 0, 0, (unsigned)(ANCHO_PANTALLA / 2 - x),
 			    ALTO_PANTALLA, ' ');
 	pantalla_rectangulo(pantalla, ANCHO_PANTALLA / 2 + 1 + x, 0,
