@@ -177,6 +177,22 @@ La división utilizada es la de C (se truncan los decimales). Primero se multipl
 
 Esta fórmula penaliza la diferencia de tiempo restando puntos, pero lo hace menos a medida que los tiempos son más grandes. De esta manera, se penaliza menos a una diferencia entre 100 y 95 "segundos" que entre 10 y 5. Para tiempos de 100 y 95 el puntaje es 98, mientras que para 10 y 5 el puntaje cae a 67.
 
+### Complejidades
+
+Para resumir un poco el TDA TP, se listan las complejidades computacionales de las operaciones más importantes:
+
+- `tp_cantidad_pokemon`: O(1). Se busca la cantidad de pokémon guardados en el hash, el cual ya tiene una variable para este propósito.
+- `tp_buscar_pokemon`: O(1). Los pokémon están guardados en el hash, que permite búsquedas en tiempo constante.
+- `tp_nombres_disponibles`: Ω(NlogN) y O(N^2) (peor caso). La mayoría de las operaciones dentro de esta función son de orden lineal (donde N es la cantidad de pokémon), pero necesitamos también ordenar la lista alfabéticamente, lo cual aumenta la complejidad computacional.
+- `tp_seleccionar_pokemon`: O(1). Hay una búsqueda en el hash, la cual ya dijimos es de tiempo constante.
+- `tp_pokemon_seleccionado`: O(1).
+- `tp_agregar_obstaculo`: O(N). Esto es porque se utilizó la lista de nodos enlazados como TDA para la colección de obstáculos.
+- `tp_quitar_obstaculo`: O(N).
+- `tp_obstaculos_pista`: O(N).
+- `tp_limpiar_pista`: O(N).
+- `tp_calcular_tiempo_pista`: O(N).
+- `tp_tiempo_por_obstaculo`: O(N).
+
 ---
 
 ## PokéRush
