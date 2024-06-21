@@ -17,7 +17,7 @@
 #define M_INSTRUCCION_2 "Todo el borde de la pantalla esta marcado con '*'"
 
 #define M_INSTRUCCION_3 "Ajusta la velocidad con las flechitas para que la"
-#define M_INSTRUCCION_4 "pokebola parpadee aproximadamente 1 vez por segundo."
+#define M_INSTRUCCION_4 "pokebola parpadee 1 o 2 veces por segundo."
 
 #define Y_INSTRUCCION 5
 
