@@ -13,7 +13,9 @@ pruebas_alumno: src/*.c pruebas_alumno.c
 valgrind-juego: juego
 	valgrind $(VALGRIND_FLAGS) ./juego
 
-juego: src/*.c juego.c
+# Tuve que modificar el makefile porque había demasiados archivos.
+# Además el bot hacía timeout al compilar las pruebas porque compilaba todo el juego.
+juego: src/*.c src/motor/*.c src/pokerush/*.c juego.c
 	$(CC) $(CFLAGS) src/*.c src/motor/*.c src/pokerush/*.c juego.c -o juego
 
 clean:
